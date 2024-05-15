@@ -15,7 +15,7 @@
                 <img width="80" src="img/logo.png" alt="">
             </div>
             <div class="pt-6">
-                <a href="{{Route('menuLateral.menu')}}"><img src="img/menu-hamburguer.png" alt="menu-lateral"></a>
+                <a href="{{Route('menuLateral')}}"><img src="img/menu-hamburguer.png" alt="menu-lateral"></a>
             </div>
         </nav>
         <div class="flex items-center justify-center pb-3">

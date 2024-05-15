@@ -1,0 +1,20 @@
+{
+    "compilerOptions": {
+      "target": "es5",
+      "module": "esnext",
+      "lib": ["dom", "esnext"],
+      "allowJs": true,
+      "skipLibCheck": true,
+      "strict": true,
+      "forceConsistentCasingInFileNames": true,
+      "noEmit": true,
+      "esModuleInterop": true,
+      "moduleResolution": "node",
+      "resolveJsonModule": true,
+      "isolatedModules": true,
+      "jsx": "preserve",
+      "noFallthroughCasesInSwitch": true
+    },
+    "include": ["resources/js/**/*", "resources/js/*"],
+    "exclude": ["node_modules"]
+  }

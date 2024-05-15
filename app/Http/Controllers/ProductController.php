@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -11,7 +12,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
+       
     }
 
     public function Product()
@@ -21,12 +22,34 @@ class ProductController extends Controller
 
     public function voltarHome()
     {
-        return view('/dashboard');
+        return view('/welcome');
     }
 
     public function menu()
     {
-        return view('/menu-lateral');
+        $user = auth()->user();
+
+        if($user) {
+
+            $nomeUser = $user->name;
+
+            $emailUser = $user->email;
+        
+
+            return view('/menu-lateral', ['user' => $user, 'nomeUser' => $nomeUser, 'emailUser' => $emailUser]);
+        }
+
+        return view('/menu-lateral', ['user' => $user,]);
+    }
+
+    public function pageLogin()
+    {
+        return view('livewire.page.auth.register');
+    }
+
+    public function pageFavorito()
+    {
+        return view('events.favoritos');
     }
 
     /**
