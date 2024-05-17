@@ -9,6 +9,9 @@ Route::get('/voltar', [ProductController::class, 'voltarHome'])->name('voltar.pr
 Route::get('/menuLateral', [ProductController::class, 'menu'])->name('menuLateral');
 Route::get('/register', [ProductController::class, 'pageLogin'])->name('register');
 Route::get('/favoritos', [ProductController::class, 'pageFavorito'])->name('pageFavorito');
+Route::get('/carrinho', [ProductController::class, 'pageCarrinho'])->name('pageCarrinho');
+Route::get('/pedido', [ProductController::class, 'finalizarPedido'])->name('finalizarPedido');
+Route::get('/formaPagamento', [ProductController::class, 'formaPagamento'])->name('formaPagamento');
 
 Route::get('/google/redirect', [App\Http\Controllers\GoogleLoginController::class, 'redirectToGoogle'])->name('google.redirect');
 Route::get('/google/callback', [App\Http\Controllers\GoogleLoginController::class, 'handleGoogleCallback'])->name('google.callback');

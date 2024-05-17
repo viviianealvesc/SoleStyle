@@ -25,6 +25,31 @@ class ProductController extends Controller
         return view('/welcome');
     }
 
+    public function finalizarPedido()
+    {
+        return view('events.finalizarPedido');
+    }
+
+    public function pageLogin()
+    {
+        return view('livewire.page.auth.register');
+    }
+
+    public function pageFavorito()
+    {
+        return view('events.favoritos');
+    }
+
+    public function pageCarrinho()
+    {
+        return view('events.carrinho');
+    }
+
+    public function formaPagamento()
+    {
+        return view('events.formaPagamento');
+    }
+
     public function menu()
     {
         $user = auth()->user();
@@ -42,15 +67,7 @@ class ProductController extends Controller
         return view('/menu-lateral', ['user' => $user,]);
     }
 
-    public function pageLogin()
-    {
-        return view('livewire.page.auth.register');
-    }
-
-    public function pageFavorito()
-    {
-        return view('events.favoritos');
-    }
+   
 
     /**
      * Show the form for creating a new resource.

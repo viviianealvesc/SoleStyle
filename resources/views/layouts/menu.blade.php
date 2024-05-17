@@ -12,7 +12,7 @@
     <header class="shadow-lg bg-[#D9C549]">
         <nav class="flex justify-between pt-4 p-4">
             <div>
-                <img width="80" src="img/logo.png" alt="">
+               <a href="{{Route('voltar.product')}}"><img width="80" src="img/logo.png" alt=""></a> 
             </div>
             <div class="pt-6">
                 <a href="{{Route('menuLateral')}}"><img src="img/menu-hamburguer.png" alt="menu-lateral"></a>

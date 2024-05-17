@@ -84,7 +84,7 @@
                 <div class="text-white flex flex-col">
                   <a class="p-1" href="#"><i class="bi bi-house pr-3 text-[#D9C549]"></i>Inicio</a>
                   <a class="p-1" href="{{Route('pageFavorito')}}"><i class="bi bi-heart pr-3 text-[#D9C549]"></i>Favoritos</a>
-                  <a class="p-1" href="#"><i class="bi bi-basket2-fill pr-3 text-[#D9C549]"></i>Carrinho</a>
+                  <a class="p-1" href="{{Route('pageCarrinho')}}"><i class="bi bi-basket2-fill pr-3 text-[#D9C549]"></i>Carrinho</a>
 
                   <hr class=" mt-7 mb-7 bg-[#3F3F3F] bg-opacity-75">
 
