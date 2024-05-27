@@ -1,18 +1,39 @@
 <?php
 
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\FavoritesController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'welcome');
-Route::get('/produto', [ProductController::class, 'product'])->name('produto.product');
-Route::get('/voltar', [ProductController::class, 'voltarHome'])->name('voltar.product');
-Route::get('/menuLateral', [ProductController::class, 'menu'])->name('menuLateral');
-Route::get('/register', [ProductController::class, 'pageLogin'])->name('register');
-Route::get('/favoritos', [ProductController::class, 'pageFavorito'])->name('pageFavorito');
-Route::get('/carrinho', [ProductController::class, 'pageCarrinho'])->name('pageCarrinho');
+
+/******* Produtos *******/
+Route::get('/', [ProductController::class, 'index'])->name('/');
+Route::get('/produto/{id}', [ProductController::class, 'show'])->name('product.product');
+Route::get('/voltar', [ProductController::class, 'voltarHome'])->name('product.voltarHome');
+Route::get('/register', [ProductController::class, 'pageLogin'])->name('product.pageLogin');
+
+
+/******* Favoritos 
+Route::get('/', [FavoritesController::class, 'index'])->name('favorites.index');*******/
+Route::get('/events/favoritos', [FavoritesController::class, 'pageFavorito'])->name('favorites.pageFavorito');
+Route::get('/favoritos/{id}', [FavoritesController::class, 'add'])->name('favorites.add');
+Route::post('/remove', [FavoritesController::class, 'remove'])->name('favorites.remove');
+
+
+/******* Carrinho
+Route::get('/', [CartController::class, 'index'])->name('cart.index');  *******/
+Route::get('/events/carrinho', [CartController::class, 'pageCarrinho'])->name('cart.pageCarrinho');
+Route::get('/carrinho/{id}', [CartController::class, 'add'])->name('cart.add');
+Route::post('/remove', [CartController::class, 'remove'])->name('cart.remove');
+Route::post('/update', [CartController::class, 'update'])->name('cart.update');
+
+
+/******* Pagamento *******/
 Route::get('/pedido', [ProductController::class, 'finalizarPedido'])->name('finalizarPedido');
 Route::get('/formaPagamento', [ProductController::class, 'formaPagamento'])->name('formaPagamento');
 
+
+/******* Login com o Google *******/
 Route::get('/google/redirect', [App\Http\Controllers\GoogleLoginController::class, 'redirectToGoogle'])->name('google.redirect');
 Route::get('/google/callback', [App\Http\Controllers\GoogleLoginController::class, 'handleGoogleCallback'])->name('google.callback');
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -12,18 +13,28 @@ class ProductController extends Controller
      */
     public function index()
     {
-       
+        $products = Product::all();
+
+       return view('/welcome', [ 'products' => $products]);
     }
 
-    public function Product()
+
+    public function show($id)
     {
-        return view('/produto');
+        $product = Product::findOrFail($id);
+
+        return view('/produto', ['product' => $product]);
     }
+
 
     public function voltarHome()
     {
-        return view('/welcome');
+       $products = Product::all();
+
+       return view('/welcome', [ 'products' => $products]);
     }
+
+
 
     public function finalizarPedido()
     {
@@ -35,37 +46,16 @@ class ProductController extends Controller
         return view('livewire.page.auth.register');
     }
 
-    public function pageFavorito()
-    {
-        return view('events.favoritos');
-    }
+ 
 
-    public function pageCarrinho()
-    {
-        return view('events.carrinho');
-    }
+  
 
     public function formaPagamento()
     {
         return view('events.formaPagamento');
     }
 
-    public function menu()
-    {
-        $user = auth()->user();
 
-        if($user) {
-
-            $nomeUser = $user->name;
-
-            $emailUser = $user->email;
-        
-
-            return view('/menu-lateral', ['user' => $user, 'nomeUser' => $nomeUser, 'emailUser' => $emailUser]);
-        }
-
-        return view('/menu-lateral', ['user' => $user,]);
-    }
 
    
 
@@ -81,14 +71,6 @@ class ProductController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
     {
         //
     }

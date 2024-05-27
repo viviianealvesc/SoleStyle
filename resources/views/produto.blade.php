@@ -5,16 +5,16 @@
     <main>
        <div>
        <div class="pt-10 ml-6">
-        <a href="{{Route('voltar.product')}}"><img width="30" src="img/desfazer.png" alt="Voltar"></a>
+        <a href="{{Route('/')}}"><img width="30" src="{{ asset('img/desfazer.png')}}" alt="Voltar"></a>
        </div>
         <div class="flex items-center justify-center pt-10">
             <div class="bg-[#3F3F3F] rounded-lg p-3">
-                <img width="360" src="img/image-removebg-preview.png" alt="">
+                <img width="360" src="{{ asset('img/image-removebg-preview.png')}}" alt="">
             </div>
         </div>
-        <p class="text-white pl-7  truncate w-[largura] mt-2 text-2xl">Tênis feminino ultra conforto</p>
+        <p class="text-white pl-7  truncate w-[largura] mt-2 text-2xl">{{ $product->nome}}</p>
         <div class="flex pl-7 gap-2">
-            <p class="text-[#D9C549] font-semibold pl-1 text-2xl">R$ 60,90</p>
+            <p class="text-[#D9C549] font-semibold pl-1 text-2xl">{{ $product->preco}}</p>
             <small class="text-[#7E7E7E] line-through pt-1">74,90</small>
         </div>
        </div>
@@ -105,8 +105,14 @@
 
         <div class="flex items-center pl-9 pt-16 mb-20">
           <div>
-            <button class="bg-[#D9C549] font-bold p-3 w-64 rounded-md">Adicionar ao carrinho</button>
-            <button class="bg-[#3F3F3F] p-3 rounded-md ml-2"><img width="30" src="img/coracao.png" alt=""></button>
+            <form action="/carrinho/{{ $product->id }}" method="GET">
+                <a class="bg-[#D9C549] font-bold p-3 w-64 rounded-md"  href="/carrinho/{{ $product->id }}"  onclick="event.preventDefault(); this.closest('form').submit(); ">Adicionar ao carrinho</a>
+            </form>
+
+            <form action="/favoritos/{{ $product->id }}" method="GET">
+                @csrf
+                <a class="bg-[#3F3F3F] p-3 rounded-md ml-2" href="/favoritos/{{ $product->id }}"  onclick="event.preventDefault(); this.closest('form').submit(); "><img width="30" src="{{ asset('img/coracao.png')}}" alt=""></a>
+            </form>
           </div>
         </div>
 
