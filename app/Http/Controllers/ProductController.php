@@ -13,9 +13,9 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::all();
+        $products = Product::limit(10)->get();
 
-       return view('/welcome', [ 'products' => $products]);
+       return view('/welcome', ['products' => $products]);
     }
 
 
@@ -27,28 +27,17 @@ class ProductController extends Controller
     }
 
 
-    public function voltarHome()
-    {
-       $products = Product::all();
-
-       return view('/welcome', [ 'products' => $products]);
-    }
-
-
-
     public function finalizarPedido()
     {
         return view('events.finalizarPedido');
     }
+
 
     public function pageLogin()
     {
         return view('livewire.page.auth.register');
     }
 
- 
-
-  
 
     public function formaPagamento()
     {

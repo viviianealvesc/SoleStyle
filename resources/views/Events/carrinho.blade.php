@@ -4,7 +4,27 @@
 
 <main>
     <div class="m-3">
+        @if(!isset($carrinhos) || $carrinhos->isEmpty())
+        <div class="flex items-center justify-center mt-9">
+           <div>
+              <h1 class="text-center opacity-40 text-white font-semibold">Não há produtos favoritados!</h1>
+              <img class="opacity-40" src="{{asset('/img/carrinho-vazio.png')}}" alt="">
+           </div>
+        </div>
+
+        @else
+
         <h1 class="text-[#D9C549] mb-4">Carrinho</h1>
+
+        <div class="flex justify-end">
+            @if(session('msg'))
+            <div class="alert border border-success alert-warning alert-dismissible fade show bg-[#3F3F3F] w-72 h-14 mr-2" role="alert">
+                <p class="text-white">{{ session('msg') }}</p>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+           @endif
+        </div>
+        
         @foreach ($carrinhos as $carrinho)
             <div class="border border-[#676767] rounded-lg p-2">
                 <div class="flex">
@@ -23,32 +43,32 @@
                     </div>
                 </div>
                 <div class="flex justify-end items-center">
-                    <a href="#"><i class="bi bi-trash text-[#D9C549]"></i></a>
+                    <a href="/removeCart/{{$carrinho->id}}"><i class="bi bi-trash text-[#D9C549]"></i></a>
                 </div>
             </div>
             
         @endforeach
-       
-       
-
+      
         <!-- Valor total -->
-        <div class="border border-[#676767] p-2 mt-36 rounded-md">
-            <div class="flex justify-between m-2">
-                <p class="text-[#7E7E7E]">Descontos</p>
-                <p class="text-[#7E7E7E] flex justify-end">- R$ 3,50</p>
-            </div>
-            <hr class=" border-[#676767] my-2 m-2">
-            <div class="flex justify-between m-2">
-                <p class="text-white font-semibold">Total</p>
-                <p class="text-white font-semibold">R$ 53,50</p>
-            </div>
-        </div> 
+            <div class="border border-[#676767] p-2 mt-36 rounded-md">
+                <div class="flex justify-between m-2">
+                    <p class="text-[#7E7E7E]">Descontos</p>
+                    <p class="text-[#7E7E7E] flex justify-end">- R$ 3,50</p>
+                </div>
+                <hr class=" border-[#676767] my-2 m-2">
+                <div class="flex justify-between m-2">
+                    <p class="text-white font-semibold">Total</p>
+                    <p class="text-white font-semibold">R$ 53,50</p>
+                </div>
+            </div> 
+       
     </div>
 
     <!-- Botão finalizar pedido -->
     <div class="m-3 mt-7">
       <a href="{{route('finalizarPedido')}}" class="p-2 rounded-md w-full bg-[#D9C549]">Finalizar pedido</a>
     </div>
+    @endif
 </main>
 
 @endsection

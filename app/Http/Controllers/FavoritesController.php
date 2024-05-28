@@ -44,7 +44,7 @@ class FavoritesController extends Controller
 
         $user->favoritos()->attach($id);
 
-        return redirect()->route('product.product', ['id' => $id])->with('message', 'Add aos favoritos'); 
+        return redirect()->route('product.product', ['id' => $id])->with('msg', 'Produto adicionado!'); 
     }
 
 
@@ -54,6 +54,6 @@ class FavoritesController extends Controller
 
         $user->favoritos()->detach($id);
 
-        return redirect()->route('product.product')->with('message', 'Add aos favoritos');
+        return redirect()->route('favorites.pageFavorito')->with('msg', 'Produto removido!');
     }
 }

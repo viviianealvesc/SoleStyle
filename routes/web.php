@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Route;
 /******* Produtos *******/
 Route::get('/', [ProductController::class, 'index'])->name('/');
 Route::get('/produto/{id}', [ProductController::class, 'show'])->name('product.product');
-Route::get('/voltar', [ProductController::class, 'voltarHome'])->name('product.voltarHome');
 Route::get('/register', [ProductController::class, 'pageLogin'])->name('product.pageLogin');
 
 
@@ -17,14 +16,14 @@ Route::get('/register', [ProductController::class, 'pageLogin'])->name('product.
 Route::get('/', [FavoritesController::class, 'index'])->name('favorites.index');*******/
 Route::get('/events/favoritos', [FavoritesController::class, 'pageFavorito'])->name('favorites.pageFavorito');
 Route::get('/favoritos/{id}', [FavoritesController::class, 'add'])->name('favorites.add');
-Route::post('/remove', [FavoritesController::class, 'remove'])->name('favorites.remove');
+Route::get('/remove/{id}', [FavoritesController::class, 'remove'])->name('remove');
 
 
 /******* Carrinho
 Route::get('/', [CartController::class, 'index'])->name('cart.index');  *******/
 Route::get('/events/carrinho', [CartController::class, 'pageCarrinho'])->name('cart.pageCarrinho');
 Route::get('/carrinho/{id}', [CartController::class, 'add'])->name('cart.add');
-Route::post('/remove', [CartController::class, 'remove'])->name('cart.remove');
+Route::get('/removeCart/{id}', [CartController::class, 'remove'])->name('cart.remove');
 Route::post('/update', [CartController::class, 'update'])->name('cart.update');
 
 

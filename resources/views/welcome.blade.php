@@ -4,9 +4,13 @@
 
 
     <main class="pt-10">
-        <small class="text-white p-1 m-2 border-l-2 border-[#D9C549] font-semibold">MAIS VENDIDOS</small>
+       <div class="flex items-center justify-between mr-2">
+        <p class="uppercase text-white p-1 m-2 border-l-2 border-[#D9C549] font-semibold">Tênis para corrida</p>
+        <a class="text-[#D9C549]" href="#">Ver todos ></a>
+       </div>
 
         <div class="flex gap-1 overflow-x-scroll px-1 [&::-webkit-scrollbar]:hidden">
+        @if(isset($products))
         @foreach ($products as $product)
             <div class="p-4">
                 <div class="bg-[#3F3F3F] rounded-lg w-40">
@@ -19,6 +23,7 @@
                 </div>
             </div>
         @endforeach
+        @endif
         </div>
       
        <!-- Banner -->
@@ -29,7 +34,10 @@
        <!-- Mais produtos -->
 
       <div class="pt-10">
-        <small class="text-white p-1 m-2 border-l-2 border-[#D9C549]">MAIS VENDIDOS</small>
+        <div class="flex items-center justify-between mr-2">
+            <p class="uppercase font-semibold text-white p-1 m-2 border-l-2 border-[#D9C549]">Tênis feminino</p>
+            <a class="text-[#D9C549]" href="#">Ver todos ></a>
+        </div>
         <div class="flex gap-1 overflow-x-scroll px-1 [&::-webkit-scrollbar]:hidden">
          <div class="p-4">
              <div class="bg-[#3F3F3F] rounded-lg w-40">
@@ -100,7 +108,7 @@
       </div>
 
       <div class="pt-10 pb-20">
-        <small class="text-white p-1 m-2 border-l-2 border-[#D9C549] ">NAVEGUE POR MARCAS</small>
+        <p class="uppercase font-semibold text-white p-1 m-2 border-l-2 border-[#D9C549] ">Navegue por marcas</p>
         <div class="flex gap-4 overflow-x-scroll px-2 mt-5 [&::-webkit-scrollbar]:hidden">
             <img src="img/marcas/adidas.webp" alt="">
             <img src="img/marcas/lacoste.webp" alt="">

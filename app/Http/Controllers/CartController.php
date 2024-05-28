@@ -20,16 +20,13 @@ class CartController extends Controller
             $emailUser = $user->email;
         
     
-            return view('events.carrinho', ['carrinhos' => $carrinhos, 'user' => $user, 'nomeUser' => $nomeUser, 'emailUser' => $emailUser]);
+            return view('/events/carrinho', ['carrinhos' => $carrinhos, 'user' => $user, 'nomeUser' => $nomeUser, 'emailUser' => $emailUser]);
         }
 
-        return view('events.carrinho', ['carrinhos' => $carrinhos]);
+        return view('/events/carrinho', ['carrinhos' => $carrinhos]);
     }
 
-    public function index()
-    {
-      
-    }
+ 
 
     public function add($id)
     {
@@ -39,12 +36,16 @@ class CartController extends Controller
 
         $user->carrinho()->attach($id);
 
-        return redirect('events.carrinho')->with('message', 'Add aos carrinho'); 
+        return redirect()->route('cart.add')->with('msg', 'Produto adicionado ao carrinho!');
     }
 
-    public function remove(Request $request)
+    public function remove($id)
     {
-        // Lógica para remover um item do carrinho
+        $user = auth()->user();
+
+        $user->carrinho()->detach($id);
+
+        return redirect()->route('cart.remove')->with('msg', 'Produto excluido!');
     }
 
     public function update(Request $request)

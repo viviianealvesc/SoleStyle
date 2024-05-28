@@ -4,9 +4,17 @@
 
     <main>
        <div>
-       <div class="pt-10 ml-6">
+       <div class="pt-10 ml-6 flex items-center justify-between">
         <a href="{{Route('/')}}"><img width="30" src="{{ asset('img/desfazer.png')}}" alt="Voltar"></a>
+
+        @if(session('msg'))
+            <div class="alert border border-success alert-warning alert-dismissible fade show bg-[#3F3F3F] w-72 h-14 mr-5" role="alert">
+                <p class="text-white">{{ session('msg') }}</p>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
        </div>
+   
         <div class="flex items-center justify-center pt-10">
             <div class="bg-[#3F3F3F] rounded-lg p-3">
                 <img width="360" src="{{ asset('img/image-removebg-preview.png')}}" alt="">
