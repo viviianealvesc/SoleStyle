@@ -31,10 +31,17 @@
                     <img class="w-28 p-2 bg-[#3F3F3F] rounded-lg" src="{{ asset('img/image-removebg-preview.png')}}" alt="">
                     <div class="ml-3">
                         <p class="text-white truncate w-[largura] mt-2">{{$carrinho->nome}}</p>
-                        <div class="flex m-1 mb-2 items-center">
-                            <p class="text-[#D9C549] font-semibold mr-1">R$ 60,90</p>
-                            <small class="text-[#7E7E7E] line-through">74,90</small>
-                        </div>
+
+                        @if($carrinho->discount == 0.00)
+                            <div class="flex m-1 mb-2 items-center">
+                                <p class="text-[#D9C549] font-semibold mr-1">{{$carrinho->preco}}</p>
+                            </div>
+                        @else
+                            <div class="flex m-1 mb-2 items-center">
+                                <p class="text-[#D9C549] font-semibold mr-1">{{$carrinho->discount}}</p>
+                                <small class="text-[#7E7E7E] line-through">{{$carrinho->preco}}</small>
+                            </div>
+                        @endif
                         <div class="flex items-center">
                             <button class="bg-[#D9C549] p-1 w-9 rounded-md"><i class="bi bi-caret-left-fill text-white"></i></button>
                             <small  class="text-white p-2">1</small>
@@ -50,18 +57,26 @@
         @endforeach
       
         <!-- Valor total -->
-            <div class="border border-[#676767] p-2 mt-36 rounded-md">
-                <div class="flex justify-between m-2">
-                    <p class="text-[#7E7E7E]">Descontos</p>
-                    <p class="text-[#7E7E7E] flex justify-end">- R$ 3,50</p>
-                </div>
-                <hr class=" border-[#676767] my-2 m-2">
-                <div class="flex justify-between m-2">
-                    <p class="text-white font-semibold">Total</p>
-                    <p class="text-white font-semibold">R$ 53,50</p>
-                </div>
-            </div> 
-       
+        <div class="border border-[#676767] p-2 mt-36 rounded-md">
+            <div class="flex justify-between m-2">
+                <p class="text-[#7E7E7E]">Subtotal</p>
+                <p class="text-[#7E7E7E]">R$ {{ number_format($subtotal, 2, ',', '.') }}</p>
+            </div>
+            <hr class="border-[#676767] my-2 m-2">
+
+            @if ($totalDesconto > 0)
+            <div class="flex justify-between m-2">
+                <p class="text-[#7E7E7E]">Descontos</p>
+                <p class="text-[#7E7E7E] flex justify-end">- R$ {{ number_format($totalDesconto, 2, ',', '.') }}</p>
+            </div>
+            <hr class="border-[#676767] my-2 m-2">
+            @endif
+
+            <div class="flex justify-between m-2">
+                <p class="text-white font-semibold">Total</p>
+                <p class="text-white font-semibold">R$ {{ number_format($total, 2, ',', '.') }}</p>
+            </div>
+        </div>
     </div>
 
     <!-- Botão finalizar pedido -->

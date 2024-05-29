@@ -118,7 +118,6 @@
             </form>
 
             <form action="/favoritos/{{ $product->id }}" method="GET">
-                @csrf
                 <a class="bg-[#3F3F3F] p-3 rounded-md ml-2" href="/favoritos/{{ $product->id }}"  onclick="event.preventDefault(); this.closest('form').submit(); "><img width="30" src="{{ asset('img/coracao.png')}}" alt=""></a>
             </form>
           </div>

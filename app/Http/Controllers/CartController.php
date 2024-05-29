@@ -13,17 +13,20 @@ class CartController extends Controller
         
         $carrinhos = $user->carrinho;
 
-        if($user) {
-
-            $nomeUser = $user->name;
+        $subtotal = 0;
+        $totalDesconto = 0;
     
-            $emailUser = $user->email;
-        
-    
-            return view('/events/carrinho', ['carrinhos' => $carrinhos, 'user' => $user, 'nomeUser' => $nomeUser, 'emailUser' => $emailUser]);
+        foreach ($carrinhos as $item) {
+            $subtotal += $item['preco'];
+            if (!empty($item['discount'])) {
+                $totalDesconto += $item['discount'];
+            }
         }
+        
+        $total = $subtotal - $totalDesconto;
+    
+        return view('/events/carrinho', compact('carrinhos', 'subtotal', 'totalDesconto', 'total'));
 
-        return view('/events/carrinho', ['carrinhos' => $carrinhos]);
     }
 
  
@@ -36,16 +39,18 @@ class CartController extends Controller
 
         $user->carrinho()->attach($id);
 
-        return redirect()->route('cart.add')->with('msg', 'Produto adicionado ao carrinho!');
+        return redirect()->route('cart.pageCarrinho')->with('msg', 'Produto adicionado ao carrinho!');
     }
 
     public function remove($id)
     {
+        Product::findOrFail($id);
+
         $user = auth()->user();
 
         $user->carrinho()->detach($id);
 
-        return redirect()->route('cart.remove')->with('msg', 'Produto excluido!');
+        return redirect()->route('cart.pageCarrinho')->with('msg', 'Produto excluido!');
     }
 
     public function update(Request $request)
