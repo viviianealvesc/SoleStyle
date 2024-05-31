@@ -47,6 +47,11 @@ class User extends Authenticatable
         ];
     }
 
+    public function cupons()
+    {
+        return $this->belongsToMany(Cupom::class, 'cupom_usados');
+    }
+
     public function favoritos()
     {
         return $this->belongsToMany(Product::class, 'favoritos');
@@ -57,9 +62,9 @@ class User extends Authenticatable
         return $this->belongsToMany(Product::class, 'carrinho');
     }
 
-    public function enderecos()
+    public function endereco()
     {
-        return $this->hasMany(Endereco::class);
+        return $this->hasOne(Endereco::class);
     }
 
     public function pedidos()

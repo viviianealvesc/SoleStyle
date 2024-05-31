@@ -21,7 +21,7 @@
                     @if($product->discount == 0.00)
                         <p class="text-[#D9C549] font-semibold pl-1">{{ $product->preco }}</p>
                     @else
-                        <p class="text-[#D9C549] font-semibold pl-1">{{ $product->discount }}</p>
+                        <p class="text-[#D9C549] font-semibold pl-1">{{$product->preco - $product->discount}}</p>
                         <small class="text-[#7E7E7E] line-through">{{ $product->preco }}</small>
                     @endif
                 </div>

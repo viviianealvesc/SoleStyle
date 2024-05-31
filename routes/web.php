@@ -27,10 +27,11 @@ Route::get('/removeCart/{id}', [CartController::class, 'remove'])->name('cart.re
 Route::post('/update', [CartController::class, 'update'])->name('cart.update');
 
 
-/******* Pagamento *******/
-Route::get('/pedido', [ProductController::class, 'finalizarPedido'])->name('finalizarPedido');
+/******* Finalizando o pedido *******/
+Route::match(['get', 'post'],'/pedido', [ProductController::class, 'finalizarPedido'])->name('finalizarPedido');
 Route::get('/pedido/endereco', [ProductController::class, 'cadastrarEndereco'])->name('endereco');
-Route::post('/pedido/endereco', [ProductController::class, 'enviarEndereco'])->name('cadastrar.endereco');
+Route::post('/endereco', [ProductController::class, 'enviarEndereco'])->name('cadastrar.endereco');
+Route::post('/pedido', [ProductController::class, 'cupom'])->name('cupom');
 Route::get('/formaPagamento', [ProductController::class, 'formaPagamento'])->name('formaPagamento');
 
 

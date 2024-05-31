@@ -10,4 +10,9 @@ class Cupom extends Model
     use HasFactory;
 
     protected $fillable = ['nome', 'porcentagem'];
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'cupom_usados');
+    }
 }

@@ -38,7 +38,7 @@
                             </div>
                         @else
                             <div class="flex m-1 mb-2 items-center">
-                                <p class="text-[#D9C549] font-semibold mr-1">{{$carrinho->discount}}</p>
+                                <p class="text-[#D9C549] font-semibold mr-1">{{$carrinho->preco - $carrinho->discount}}</p>
                                 <small class="text-[#7E7E7E] line-through">{{$carrinho->preco}}</small>
                             </div>
                         @endif

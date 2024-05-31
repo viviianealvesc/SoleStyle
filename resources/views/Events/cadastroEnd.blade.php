@@ -4,6 +4,14 @@
 
 
 <div class="flex justify-center items-center w-full mt-10">
+    <div class="flex justify-end">
+        @if(session('msg'))
+        <div class="alert border border-success alert-warning alert-dismissible fade show bg-[#3F3F3F] w-72 h-14 mr-2" role="alert">
+            <p class="text-white">{{ session('msg') }}</p>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+       @endif
+    </div>
     <form class="max-w-md w-full" action="{{route('cadastrar.endereco')}}" method="POST">
         @csrf
         <div class="mb-4">

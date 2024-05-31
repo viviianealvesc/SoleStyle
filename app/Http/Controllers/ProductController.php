@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cupom;
 use App\Models\Endereco;
 use App\Models\Product;
 use App\Models\User;
@@ -31,27 +32,46 @@ class ProductController extends Controller
     public function finalizarPedido()
     {
         $user = auth()->user();
-        
+    
         $carrinhos = $user->carrinho;
-
+    
         $subtotal = 0;
         $totalDesconto = 0;
+        $valorDesconto = 0;
     
-        foreach ($carrinhos as $item) {
-            $subtotal += $item['preco'];
-            if (!empty($item['discount'])) {
-                $totalDesconto += $item['discount'];
+        if (session()->has('cupom_aplicado')) {
+
+            $cupom = Cupom::find(session('cupom_aplicado'));
+            session()->forget('cupom_aplicado');
+    
+            foreach ($carrinhos as $item) {
+                $subtotal += $item->preco;
+                if (!empty($item->discount)) {
+                    $totalDesconto += $item->discount;
+                }
+                $valorDesconto += $item->preco * ($cupom->porcentagem / 100);
+            }
+    
+            $totalDesconto += $valorDesconto;
+        } else {
+            foreach ($carrinhos as $item) {
+                $subtotal += $item->preco;
+                if (!empty($item->discount)) {
+                    $totalDesconto += $item->discount;
+                }
             }
         }
-        
+    
         $total = $subtotal - $totalDesconto;
+    
+        // Pegando o endereco do usuario logado
+        $enderecoUser = $user->endereco; 
 
-         // Pegando o endereco do usuario logado
-         $enderecoUser = $user->enderecos; 
     
         return view('events.finalizarPedido', compact('carrinhos', 'subtotal', 'totalDesconto', 'total', 'enderecoUser'));
-       
     }
+    
+
 
     public function cadastrarEndereco() {
 
@@ -77,27 +97,31 @@ class ProductController extends Controller
         $endereco->user_id = $user->id;
 
         $endereco->save();
-
-        // Pegando o endereco do usuario logado
-        $enderecoUser = $user->enderecos; 
-
-      // Dados da compra
-        $carrinhos = $user->carrinho;
-
-        $subtotal = 0;
-        $totalDesconto = 0;
     
-        foreach ($carrinhos as $item) {
-            $subtotal += $item['preco'];
-            if (!empty($item['discount'])) {
-                $totalDesconto += $item['discount'];
+        return view('events.cadastroEnd')->with(['msg' => 'Endereço salvo com sucesso!']);
+
+    }
+
+    public function cupom(Request $request)
+    {
+        $cupomCodigo = $request->nome;
+        $cupom = Cupom::where('nome', $cupomCodigo)->first();
+        
+        
+        if ($cupom) {
+            $user = auth()->user();
+            
+            if ($user && $cupom) {
+                $user->cupons()->attach($cupom->id); 
+
+                // Armazena o cupom na sessão
+                session(['cupom_aplicado' => $cupom->id]);
+
+                return redirect()->route('finalizarPedido')->with('msg', 'Cupom aplicado com sucesso!');
+            } else {
+                return redirect()->route('finalizarPedido')->with('msg', 'Erro ao aplicar cupom.');
             }
         }
-        
-        $total = $subtotal - $totalDesconto;
-    
-        return view('events.finalizarPedido', compact('carrinhos', 'subtotal', 'totalDesconto', 'total', 'enderecoUser'));
-
     }
 
 

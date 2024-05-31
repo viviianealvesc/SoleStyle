@@ -14,16 +14,16 @@
               
                   <hr class=" border-[#676767] my-2">
                   @if(isset($enderecoUser))
-                    @foreach ($enderecoUser as $endereco)
-                      <p>{{$endereco->rua}}</p>
-                    @endforeach
+                    <p class="text-white">{{$enderecoUser->rua}}, {{$enderecoUser->numero}}, {{$enderecoUser->bairro}}, {{$enderecoUser->cidade}}, {{$enderecoUser->estado}}, {{$enderecoUser->cep}}</p>
                     <hr class=" border-[#676767] my-2">
+                  
                   @else
                   <small class="text-white">Nenhum endereço cadastrado</small>
-
+                    <hr class=" border-[#676767] my-2">
+                
                   @endif
-                  <a href="{{ route('endereco')}}">Editar ou adicionar um endereço</a>
-                 
+
+                  <a class="text-white" href="{{ route('endereco')}}">Editar ou adicionar um endereço</a>
               </div>
 
               <div class="bg-[#3F3F3F] rounded-md p-3">
@@ -37,10 +37,21 @@
       
           <div class="m-4">
             <div>
-              <label class="text-[#D9C549]" for="text" id="cupom">Cupom de desconto</label>
-              <input class="rounded-sm my-3 p-2 w-full" type="text" id="cupom" name="cupom" placeholder="Coloque o cupom">
+              <form action="{{route('cupom')}}" method="POST">
+                @csrf
+                <label class="text-[#D9C549]" for="text" id="cupom">Cupom de desconto</label>
+                <input class="rounded-sm my-3 p-2 w-full" type="text" id="nome" name="nome"  placeholder="Coloque o cupom">
+                <button class="w-full bg-[#D9C549] p-2 rounded-sm" type="submit">Aplicar</button>
+              </form>
+
+              @if(session('msg'))
+                  <p class="text-[#319f52] text-center">{{ session('msg') }}</p>
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              @endif
             </div>
         </form>
+
+        
 
           <div class="bg-[#3F3F3F] p-3 rounded-md my-4">
             <h2 class="text-[#D9C549] font-semibold">Resumo da compra</h2>
@@ -55,7 +66,8 @@
                 @if ($totalDesconto > 0)
                 <div class="flex justify-between m-2">
                     <p class="text-[#7E7E7E]">Descontos</p>
-                    <p class="text-[#7E7E7E] flex justify-end">- R$ {{ number_format($totalDesconto, 2, ',', '.') }}</p>
+                    <p class="text-[#7E7E7E] flex justify-end">- R$ {{ number_format(($totalDesconto), 2, ',', '.') }}</p>
+
                 </div>
                 <hr class="border-[#676767] my-2 m-2">
                 @endif
@@ -70,7 +82,7 @@
     </div>
 
      <!-- Botão finalizar pedido -->
-     <div class="m-10 mt-20 flex justify-center items-center">
+     <div class="m-10 mt-20 flex text-center justify-center items-center">
         <a href="{{route('formaPagamento')}}" class="p-2 rounded-md w-48 bg-[#D9C549] font-semibold">Continuar</a>
       </div>
 </main>
