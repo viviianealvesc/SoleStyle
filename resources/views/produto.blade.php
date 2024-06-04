@@ -17,7 +17,9 @@
    
         <div class="flex items-center justify-center pt-10">
             <div class="bg-[#3F3F3F] rounded-lg p-3">
-                <img width="360" src="{{ asset('img/image-removebg-preview.png')}}" alt="">
+                @foreach ($product->avatar as $imagem)
+                   <a href="/produto/{{ $product->id }}"> <img src="/img/loja/{{ $imagem}}" alt=""></a>
+                @endforeach
             </div>
         </div>
         <p class="text-white pl-7  truncate w-[largura] mt-2 text-2xl">{{ $product->nome}}</p>

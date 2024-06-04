@@ -9,7 +9,26 @@ class Product extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['nome', 'descricao', 'numeracao', 'cores', 'quantidade', 'disponivel'];
+    protected $fillable = [
+        'nome', 
+        'descricao', 
+        'numeracao', 
+        'cores', 
+        'quantidade', 
+        'disponivel',
+        'avatar',
+        'discount',
+        'estoque',
+        'marca',
+        'preco',
+    ];
+
+    protected $casts = [
+        'numeracao' => 'array',
+        'cores' => 'array', 
+        'avatar' => 'array',
+    ];
+    
 
     public function favoritos()
     {

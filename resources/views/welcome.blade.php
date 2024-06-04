@@ -13,8 +13,10 @@
         @if(isset($products))
         @foreach ($products as $product)
             <div class="p-4">
-                <div class="bg-[#3F3F3F] rounded-lg w-40">
-                    <a href="/produto/{{ $product->id }}"> <img src="{{ asset('/img/image-removebg-preview.png')}}" alt=""></a>
+                <div class="bg-[#3F3F3F] p-2 rounded-lg w-40">
+                    @foreach ($product->avatar as $imagem)
+                      <a href="/produto/{{ $product->id }}"> <img src="/img/loja/{{ $imagem}}" alt=""></a>
+                    @endforeach
                 </div>
                 <p class="text-white truncate w-[largura] mt-2 pl-1">{{ $product->nome }}</p>
                 <div class="flex text-center gap-2">
