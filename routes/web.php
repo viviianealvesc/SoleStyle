@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\FavoritesController;
+use App\Http\Controllers\PayController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
@@ -33,6 +34,7 @@ Route::get('/pedido/endereco', [ProductController::class, 'cadastrarEndereco'])-
 Route::post('/endereco', [ProductController::class, 'enviarEndereco'])->name('cadastrar.endereco');
 Route::post('/pedido', [ProductController::class, 'cupom'])->name('cupom');
 Route::get('/formaPagamento', [ProductController::class, 'formaPagamento'])->name('formaPagamento');
+Route::post('/events/pag', [PayController::class, 'pagarCompra'])->name('pagarCompra'); //pix
 
 
 /******* Login com o Google *******/

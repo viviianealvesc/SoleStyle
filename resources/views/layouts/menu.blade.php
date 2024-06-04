@@ -19,10 +19,12 @@
                 <button id="deactivateButton"><img src="{{ asset('img/menu-hamburguer.png') }}" alt="menu-lateral"></button>
             </div>
         </nav>
+        <form action="{{ route('/') }}" method="GET">
         <div class="flex items-center justify-center pb-3">
-            <input class="rounded-lg p-2 bg-[#3F3F3F]" type="text" placeholder="O que você procura?">
-            <img class="bg-[#3F3F3F] rounded-md ml-2 p-1" width="40" src="{{ asset('img/lupa (1).png') }}" alt="">
+          <input class="rounded-lg p-2 bg-[#3F3F3F]" type="text" id="search" name="search" placeholder="O que você procura?">
+          <button type="submit"><img class="bg-[#3F3F3F] rounded-md ml-2 p-1" width="40" src="{{ asset('img/lupa (1).png') }}" alt=""></button>
         </div>
+      </form>
     </header>
 
     <!-- Header section end -->

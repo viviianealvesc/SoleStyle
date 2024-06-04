@@ -3,7 +3,7 @@
 @section('content')
 
 
-    <main class="pt-10">
+    <main class="pt-10">   
        <div class="flex items-center justify-between mr-2">
         <p class="uppercase text-white p-1 m-2 border-l-2 border-[#D9C549] font-semibold">Tênis para corrida</p>
         <a class="text-[#D9C549]" href="#">Ver todos ></a>

@@ -13,11 +13,25 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::limit(10)->get();
+        $search = $request->search;
 
-       return view('/welcome', ['products' => $products]);
+        if($search) {
+
+            $products = Product::where([
+                ['nome', 'like', '%'. $search . '%']
+            ])->get();
+
+        }else {
+            
+            $products = Product::limit(10)->get();
+
+        }
+
+       
+
+       return view('/welcome', ['products' => $products, 'search' => $search]);
     }
 
 
@@ -133,7 +147,39 @@ class ProductController extends Controller
 
     public function formaPagamento()
     {
-        return view('events.formaPagamento');
+        $user = auth()->user();
+    
+        $carrinhos = $user->carrinho;
+        $cupom = $user->cupons->first();
+    
+        $subtotal = 0;
+        $totalDesconto = 0;
+        $valorDesconto = 0;
+    
+        if ($cupom) {
+    
+            foreach ($carrinhos as $item) {
+                $subtotal += $item->preco;
+                if (!empty($item->discount)) {
+                    $totalDesconto += $item->discount;
+                }
+                $valorDesconto += $item->preco * ($cupom->porcentagem / 100);
+            }
+    
+            $totalDesconto += $valorDesconto;
+        } else {
+            foreach ($carrinhos as $item) {
+                $subtotal += $item->preco;
+                if (!empty($item->discount)) {
+                    $totalDesconto += $item->discount;
+                }
+            }
+        }
+    
+        $total = $subtotal - $totalDesconto;
+
+
+        return view('events.formaPagamento', compact('carrinhos', 'subtotal', 'totalDesconto', 'total'));
     }
 
 
