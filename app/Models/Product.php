@@ -17,6 +17,7 @@ class Product extends Model
         'quantidade', 
         'disponivel',
         'avatar',
+        'imagem',
         'discount',
         'estoque',
         'marca',
