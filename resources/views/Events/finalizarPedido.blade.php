@@ -3,7 +3,7 @@
 @section('content')
 
 <main>
-    <div class="flex justify-around flex-wrap ">
+    <div class=" flex-wrap ">
         <div class="m-4">
           <form action="" method="POST">
             @csrf
@@ -34,24 +34,7 @@
                   <p class="text-[#676767] my-2">Segunda á sexta das 9hs ás 18hs. - Sábado das 9h ás 12h</p>
               </div>
           </div>
-      
-          <div class="m-4">
-            <div>
-              <form action="{{route('cupom')}}" method="POST">
-                @csrf
-                <label class="text-[#D9C549]" for="text" id="cupom">Cupom de desconto</label>
-                <input class="rounded-sm my-3 p-2 w-full" type="text" id="nome" name="nome"  placeholder="Coloque o cupom">
-                <button class="w-full bg-[#D9C549] p-2 rounded-sm" type="submit">Aplicar</button>
-              </form>
-
-              @if(session('msg'))
-                  <p class="text-[#319f52] text-center">{{ session('msg') }}</p>
-                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-              @endif
-            </div>
         </form>
-
-        
 
           <div class="bg-[#3F3F3F] p-3 rounded-md my-4">
             <h2 class="text-[#D9C549] font-semibold">Resumo da compra</h2>
@@ -74,7 +57,7 @@
 
                 <div class="flex justify-between m-2">
                     <p class="text-white font-semibold">Total</p>
-                    <p class="text-white font-semibold">R$ {{ number_format($total, 2, ',', '.') }}</p>
+                    <p class="text-white font-semibold">R$ {{ session('quantidade', 0) * $total }}</p>
                 </div>
             </div>
           </div>

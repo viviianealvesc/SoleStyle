@@ -17,9 +17,15 @@
          <div class="flex items-center justify-center pt-10">
              <div class="ml-5">
                  <div class="flex gap-1 overflow-x-scroll px-1 [&::-webkit-scrollbar]:hidden">
-                     @foreach ($product->cores[0]['avatar'] as $avatar)
-                       <img class="w-96 rounded-md m-1" src="/img/loja/{{ $avatar }}" alt="">
-                     @endforeach
+                    @if($selectedColor)
+                        @foreach ($selectedColor['avatar'] as $imagem)
+                          <img class="w-96 rounded-md m-1" src="/img/loja/{{ $imagem }}" alt="">
+                        @endforeach
+                    @else
+                        @foreach ($product->cores[0]['avatar'] as $avatar)
+                          <img class="w-96 rounded-md m-1" src="/img/loja/{{ $avatar }}" alt="">
+                        @endforeach
+                    @endif
                 </div>
                 <p class="text-white pl-2  truncate w-[largura] mt-3 text-2xl">{{ $product->nome}}</p>
                 <div class="flex pl-2 gap-2">
@@ -31,32 +37,59 @@
                     <h2 class="text-[#D9C549] font-semibold pt-9">Cores</h2>
                     <div class="flex" id="color-selector">
                         @foreach ($product->cores as $index => $cor)
-                            <img class="w-20 rounded-md m-1 color-option" src="/img/loja/{{ $cor['avatar'][0]}}" data-index="{{ $index }}" alt="Cor {{ $cor['color'] }}">
+                            <form action="/produto/{{$product->id . '/' . $index }}" method="GET" class="inline">
+                                <button type="submit" class="w-20 rounded-md m-1 p-0 border-none bg-none">
+                                <img class="w-20 rounded-md m-1 color-option" src="/img/loja/{{ $cor['avatar'][0]}}" data-index="{{ $index }}" alt="Cor {{ $cor['color'] }}">
+                                </button>
+                            </form>
                         @endforeach
                     </div>
-                    
                </div>
            </div>
          </div>
         </div>
  
-         <!-- Numeração -->
-         <div>
+          <!-- Numeração -->
+          <div>
             <p class="text-[#D9C549] font-semibold pl-7 pt-9">Numeração</p>
-            <div id="numeracao-container" class="flex items-center pl-7 pt-3">
-                <!-- As numerações aparecerão aqui -->
+            <div class="flex items-center pl-7 pt-3">
+                @if($selectedColor)
+                    @foreach ($selectedColor['numeracao'] as $numero)
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="checkbox" class="hidden peer">
+                            <span class="w-9 h-8 bg-[#3F3F3F] rounded-md peer-checked:bg-blue-500 peer-checked:border-blue-500 peer-checked:text-white flex items-center justify-center">
+                                <p class="p-2 font-bold text-white">{{ $numero }}</p>
+                                <svg class="hidden w-4 h-4 text-white peer-checked:block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </span>
+                        </label>
+                    @endforeach
+                @else
+                    @foreach ($product->cores[0]['numeracao'] as $numero)
+                    <label class="flex items-center space-x-2 cursor-pointer">
+                        <input type="checkbox" class="hidden peer">
+                        <span class="w-9 h-8 bg-[#3F3F3F] rounded-md peer-checked:bg-blue-500 peer-checked:border-blue-500 peer-checked:text-white flex items-center justify-center">
+                            <p class="p-2 font-bold text-white">{{ $numero }}</p>
+                            <svg class="hidden w-4 h-4 text-white peer-checked:block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                        </span>
+                    </label>
+                    @endforeach
+                @endif
             </div>
-         </div>
+        </div>
  
          <!--Adicionar ao carrinho -->
          <div class="flex items-center pl-9 pt-16 mb-20">
-           <div>
+           <div class="flex items-center">
              <form action="/carrinho/{{ $product->id }}" method="GET">
                  <a class="bg-[#D9C549] font-bold p-3 w-64 rounded-md"  href="/carrinho/{{ $product->id }}"  onclick="event.preventDefault(); this.closest('form').submit(); ">Adicionar ao carrinho</a>
              </form>
  
              <form action="/favoritos/{{ $product->id }}" method="GET">
-                 <a class="bg-[#3F3F3F] p-3 rounded-md ml-2" href="/favoritos/{{ $product->id }}"  onclick="event.preventDefault(); this.closest('form').submit(); "><img width="30" src="{{ asset('img/coracao.png')}}" alt=""></a>
+                 <a class=" rounded-md " href="/favoritos/{{ $product->id }}"  onclick="event.preventDefault(); this.closest('form').submit(); "><img width="30" class="m-3 " src="{{ asset('img/coracao.png')}}" alt=""></a>
              </form>
            </div>
          </div>
@@ -67,7 +100,7 @@
          <!--Descrição do produto -->
          <div class="text-justify m-5">
              <h1 class="text-white font-bold">Descrição</h1>
-             <p class="text-[#878686] mt-3">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Officiis quo atque sunt fuga error rem, nam qui eaque unde. Magnam eveniet ipsam eligendi nulla repellendus modi sed ipsa iusto nesciunt!</p>
+             <p class="text-[#878686] mt-3">{{$product->descricao}}</p>
          </div>
  
          <!--Produtos -->

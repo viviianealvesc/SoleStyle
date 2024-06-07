@@ -28,7 +28,7 @@
         @foreach ($carrinhos as $carrinho)
             <div class="border border-[#676767] rounded-lg p-2">
                 <div class="flex">
-                    <img class="w-28 p-2 bg-[#3F3F3F] rounded-lg" src="{{ asset('img/image-removebg-preview.png')}}" alt="">
+                    <img class="w-28 p-2 rounded-lg" src="/img/loja/{{$carrinho->imagem}}" alt="{{$carrinho->nome}}">
                     <div class="ml-3">
                         <p class="text-white truncate w-[largura] mt-2">{{$carrinho->nome}}</p>
 
@@ -43,9 +43,16 @@
                             </div>
                         @endif
                         <div class="flex items-center">
-                            <button class="bg-[#D9C549] p-1 w-9 rounded-md"><i class="bi bi-caret-left-fill text-white"></i></button>
-                            <small  class="text-white p-2">1</small>
-                            <button class="border p-1 rounded-md w-9"><i class="bi bi-caret-right-fill text-white"></i></button>
+                            <form action="/events/carrinho/atualizar" method="post">
+                                @csrf
+                                <button type="submit" name="action" value="decrement" class="bg-[#D9C549] p-1 w-9 rounded-md">
+                                    <i class="bi bi-caret-left-fill text-white"></i>
+                                </button>
+                                <small class="text-white p-2">{{ session('quantidade', 0) }}</small>
+                                <button type="submit" name="action" value="increment" class="border p-1 rounded-md w-9">
+                                    <i class="bi bi-caret-right-fill text-white"></i>
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -74,7 +81,8 @@
 
             <div class="flex justify-between m-2">
                 <p class="text-white font-semibold">Total</p>
-                <p class="text-white font-semibold">R$ {{ number_format($total, 2, ',', '.') }}</p>
+                <p class="text-white font-semibold">R$ {{ session('quantidade', 0) * $total }}</p>
+                
             </div>
         </div>
     </div>

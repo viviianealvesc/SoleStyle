@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\FavoritesController;
+use App\Http\Controllers\MarcasController;
 use App\Http\Controllers\PayController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
@@ -9,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 
 /******* Produtos *******/
 Route::get('/', [ProductController::class, 'index'])->name('/');
+Route::get('/produto/{id}/{index}', [ProductController::class, 'show'])->name('product.product');
 Route::get('/produto/{id}', [ProductController::class, 'show'])->name('product.product');
 Route::get('/register', [ProductController::class, 'pageLogin'])->name('product.pageLogin');
 
@@ -20,12 +22,17 @@ Route::get('/favoritos/{id}', [FavoritesController::class, 'add'])->name('favori
 Route::get('/remove/{id}', [FavoritesController::class, 'remove'])->name('remove');
 
 
-/******* Carrinho
-Route::get('/', [CartController::class, 'index'])->name('cart.index');  *******/
+/******* Carrinho *******/
 Route::get('/events/carrinho', [CartController::class, 'pageCarrinho'])->name('cart.pageCarrinho')->middleware('auth');;
+Route::post('/events/carrinho/atualizar', [CartController::class, 'atualizarQuantidade'])->name('cart.quant')->middleware('auth');;
 Route::get('/carrinho/{id}', [CartController::class, 'add'])->name('cart.add')->middleware('auth');;
 Route::get('/removeCart/{id}', [CartController::class, 'remove'])->name('cart.remove');
 Route::post('/update', [CartController::class, 'update'])->name('cart.update');
+
+
+/******* Navegue por marcas *******/
+Route::get('/marca/{nome}', [MarcasController::class, 'marca'])->name('marca');
+
 
 
 /******* Finalizando o pedido *******/

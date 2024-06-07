@@ -29,7 +29,6 @@ class CartController extends Controller
 
     }
 
- 
 
     public function add($id)
     {
@@ -40,6 +39,25 @@ class CartController extends Controller
         $user->carrinho()->attach($id);
 
         return redirect()->route('cart.pageCarrinho')->with('msg', 'Produto adicionado ao carrinho!');
+    }
+
+    public function atualizarQuantidade(Request $request)
+    {
+        $action = $request->input('action');
+        $quantidade = $request->session()->get('quantidade', 0);
+
+
+        if ($action === 'increment') {
+            $quantidade++;
+        } elseif ($action === 'decrement') {
+            if ($quantidade > 0) {
+                $quantidade--;
+            }
+        }
+
+        $request->session()->put('quantidade', $quantidade);
+
+        return redirect()->back();
     }
 
     public function remove($id)

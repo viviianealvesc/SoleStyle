@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Banner;
 use App\Models\Cupom;
 use App\Models\Endereco;
 use App\Models\Product;
@@ -26,22 +27,25 @@ class ProductController extends Controller
         }else {
             
             $products = Product::all();
+            $banners = Banner::all();
 
         }
 
-       
-
-       return view('/welcome', ['products' => $products, 'search' => $search]);
+       return view('/welcome', ['products' => $products,'banners' => $banners, 'search' => $search]);
     }
 
 
-    public function show($id)
+    public function show($id, $selectedColorIndex = null)
     {
+ 
         $product = Product::findOrFail($id);
 
+        $selectedColor = $selectedColorIndex !== null ? $product->cores[$selectedColorIndex] : null;
 
-        return view('/produto', ['product' => $product]);
+  
+        return view('/produto', ['product' => $product, 'selectedColor' => $selectedColor, 'selectedColorIndex' => $selectedColorIndex]);
     }
+
 
 
     public function finalizarPedido()
@@ -54,28 +58,12 @@ class ProductController extends Controller
         $totalDesconto = 0;
         $valorDesconto = 0;
     
-        if (session()->has('cupom_aplicado')) {
-
-            $cupom = Cupom::find(session('cupom_aplicado'));
-            session()->forget('cupom_aplicado');
-    
-            foreach ($carrinhos as $item) {
-                $subtotal += $item->preco;
-                if (!empty($item->discount)) {
-                    $totalDesconto += $item->discount;
-                }
-                $valorDesconto += $item->preco * ($cupom->porcentagem / 100);
-            }
-    
-            $totalDesconto += $valorDesconto;
-        } else {
             foreach ($carrinhos as $item) {
                 $subtotal += $item->preco;
                 if (!empty($item->discount)) {
                     $totalDesconto += $item->discount;
                 }
             }
-        }
     
         $total = $subtotal - $totalDesconto;
     
@@ -132,18 +120,13 @@ class ProductController extends Controller
                 // Armazena o cupom na sessão
                 session(['cupom_aplicado' => $cupom->id]);
 
-                return redirect()->route('finalizarPedido')->with('msg', 'Cupom aplicado com sucesso!');
+                return redirect()->route('formaPagamento')->with('msg', 'Cupom aplicado com sucesso!');
             } else {
-                return redirect()->route('finalizarPedido')->with('msg', 'Erro ao aplicar cupom.');
+                return redirect()->route('formaPagamento')->with('msg', 'Erro ao aplicar cupom.');
             }
         }
     }
-
-
-    public function pageLogin()
-    {
-        return view('livewire.page.auth.register');
-    }
+ 
 
 
     public function formaPagamento()
@@ -151,13 +134,15 @@ class ProductController extends Controller
         $user = auth()->user();
     
         $carrinhos = $user->carrinho;
-        $cupom = $user->cupons->first();
     
         $subtotal = 0;
         $totalDesconto = 0;
         $valorDesconto = 0;
     
-        if ($cupom) {
+        if (session()->has('cupom_aplicado')) {
+
+            $cupom = Cupom::find(session('cupom_aplicado'));
+            session()->forget('cupom_aplicado');
     
             foreach ($carrinhos as $item) {
                 $subtotal += $item->preco;
@@ -178,13 +163,20 @@ class ProductController extends Controller
         }
     
         $total = $subtotal - $totalDesconto;
+    
+        // Pegando o endereco do usuario logado
+        $enderecoUser = $user->endereco; 
 
-
-        return view('events.formaPagamento', compact('carrinhos', 'subtotal', 'totalDesconto', 'total'));
+    
+        return view('events.formaPagamento', compact('carrinhos', 'subtotal', 'totalDesconto', 'total', 'enderecoUser'));
     }
 
 
 
+    public function pageLogin()
+    {
+        return view('livewire.page.auth.register');
+    }
    
 
     /**
