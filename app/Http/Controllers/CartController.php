@@ -44,14 +44,14 @@ class CartController extends Controller
     public function atualizarQuantidade(Request $request)
     {
         $action = $request->input('action');
-        $quantidade = $request->session()->get('quantidade', 0);
+        $quantidade = $request->session()->get('quantidade', 1);
 
 
         if ($action === 'increment') {
-            $quantidade++;
+                $quantidade++ ;
         } elseif ($action === 'decrement') {
-            if ($quantidade > 0) {
-                $quantidade--;
+            if ($quantidade > 1) {
+                $quantidade = $quantidade - 1; 
             }
         }
 

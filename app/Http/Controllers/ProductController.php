@@ -29,9 +29,11 @@ class ProductController extends Controller
             $products = Product::all();
             $banners = Banner::all();
 
+            return view('/welcome', ['products' => $products,'banners' => $banners]);
+
         }
 
-       return view('/welcome', ['products' => $products,'banners' => $banners, 'search' => $search]);
+       return view('/welcome', ['products' => $products, 'search' => $search]);
     }
 
 
@@ -42,8 +44,22 @@ class ProductController extends Controller
 
         $selectedColor = $selectedColorIndex !== null ? $product->cores[$selectedColorIndex] : null;
 
+        $user = auth()->user();
+
+        $favorito = false;
+
+        if($user) {
+            $userFav = $user->favoritos->toArray();
+
+            foreach($userFav as $userFavs) {
+                if($userFavs['id'] == $id) {
+                    $favorito = true;
+                }
+            }
+        }
+
   
-        return view('/produto', ['product' => $product, 'selectedColor' => $selectedColor, 'selectedColorIndex' => $selectedColorIndex]);
+        return view('/produto', ['product' => $product, 'selectedColor' => $selectedColor, 'selectedColorIndex' => $selectedColorIndex, 'favorito' => $favorito]);
     }
 
 
@@ -173,9 +189,14 @@ class ProductController extends Controller
 
 
 
-    public function pageLogin()
+    public function pageRegister()
     {
         return view('livewire.page.auth.register');
+    }
+
+    public function pageLogin()
+    {
+        return view('livewire.page.auth.login');
     }
    
 

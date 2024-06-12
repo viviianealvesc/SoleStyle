@@ -30,8 +30,21 @@ class FavoritesController extends Controller
 
 
 
-    public function index()
+    public function index($id)
     {
+        $user = auth()->user();
+
+        $favorito = false;
+
+        if($user) {
+            $userFav = $user->favoritos->toArray();
+
+            foreach($userFav as $userFavs) {
+                if($userFavs['id'] == $id) {
+                    $favorito = true;
+                }
+            }
+        }
         return view('events.favoritos');
       
     }
@@ -44,7 +57,11 @@ class FavoritesController extends Controller
 
         $user->favoritos()->attach($id);
 
-        return redirect()->route('product.product', ['id' => $id])->with('msg', 'Produto adicionado!'); 
+        $favorito = false;
+
+       
+
+        return redirect()->route('product.product', ['id' => $id, 'favorito' => $favorito])->with('msg', 'Produto adicionado!'); 
     }
 
 

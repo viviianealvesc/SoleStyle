@@ -33,7 +33,7 @@
             <input class="text-[#676767] p-2 rounded-sm w-full" type="text" id="rua" name="rua" placeholder="Rua">
         </div>
         <div class="mb-4">
-            <input class="text-[#676767] p-2 rounded-sm w-full" type="text" id="bairro" name="bairro" placeholder="Rua">
+            <input class="text-[#676767] p-2 rounded-sm w-full" type="text" id="bairro" name="bairro" placeholder="bairro">
         </div>
         <div class="mb-4">
             <input class="text-[#676767] p-2 rounded-sm w-full" type="text" id="numero" name="numero" placeholder="Numero">

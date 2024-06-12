@@ -80,6 +80,8 @@
                 @endif
             </div>
         </div>
+
+        
  
          <!--Adicionar ao carrinho -->
          <div class="flex items-center pl-9 pt-16 mb-20">
@@ -87,10 +89,16 @@
              <form action="/carrinho/{{ $product->id }}" method="GET">
                  <a class="bg-[#D9C549] font-bold p-3 w-64 rounded-md"  href="/carrinho/{{ $product->id }}"  onclick="event.preventDefault(); this.closest('form').submit(); ">Adicionar ao carrinho</a>
              </form>
- 
-             <form action="/favoritos/{{ $product->id }}" method="GET">
-                 <a class=" rounded-md " href="/favoritos/{{ $product->id }}"  onclick="event.preventDefault(); this.closest('form').submit(); "><img width="30" class="m-3 " src="{{ asset('img/coracao.png')}}" alt=""></a>
-             </form>
+             @if(!$favorito)
+                <form action="/favoritos/{{ $product->id }}" method="GET">
+                    <a class=" rounded-md " href="/favoritos/{{ $product->id }}"  onclick="event.preventDefault(); this.closest('form').submit(); "><img width="30" class="m-3 " src="{{ asset('img/coracao.png')}}" alt=""></a>
+                </form>
+            @else
+                <form action="/favoritos/{{ $product->id }}" method="GET">
+                    <a class=" rounded-md " href="/favoritos/{{ $product->id }}"  onclick="event.preventDefault(); this.closest('form').submit(); "><img width="30" class="m-3 " src="{{ asset('img/coracao2.png')}}" alt=""></a>
+                </form>
+             @endif
+          
            </div>
          </div>
     

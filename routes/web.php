@@ -12,11 +12,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [ProductController::class, 'index'])->name('/');
 Route::get('/produto/{id}/{index}', [ProductController::class, 'show'])->name('product.product');
 Route::get('/produto/{id}', [ProductController::class, 'show'])->name('product.product');
-Route::get('/register', [ProductController::class, 'pageLogin'])->name('product.pageLogin');
+Route::get('/register', [ProductController::class, 'pageRegister'])->name('product.pageLogin');
+Route::get('/login', [ProductController::class, 'pageRegister'])->name('login');
 
 
-/******* Favoritos 
-Route::get('/', [FavoritesController::class, 'index'])->name('favorites.index');*******/
+/******* Favoritos *******/
 Route::get('/events/favoritos', [FavoritesController::class, 'pageFavorito'])->name('favorites.pageFavorito')->middleware('auth');;
 Route::get('/favoritos/{id}', [FavoritesController::class, 'add'])->name('favorites.add')->middleware('auth');;
 Route::get('/remove/{id}', [FavoritesController::class, 'remove'])->name('remove');
@@ -48,6 +48,11 @@ Route::post('/events/pag', [PayController::class, 'pagarCompra'])->name('pagarCo
 Route::get('/google/redirect', [App\Http\Controllers\GoogleLoginController::class, 'redirectToGoogle'])->name('google.redirect');
 Route::get('/google/callback', [App\Http\Controllers\GoogleLoginController::class, 'handleGoogleCallback'])->name('google.callback');
 
+
+/******* PayPal *******/
+Route::get('/checkout', '\App\Http\Controllers\PayPalController@index')->name('checkout');
+Route::get('/create/{amount}', '\App\Http\Controllers\PayPalController@create');
+Route::post('/complete', '\App\Http\Controllers\PayPalController@complete');
 
 
 Route::get('/logout', [App\Http\Controllers\Auth\AuthenticatedSessionController::class, 'destroy'])

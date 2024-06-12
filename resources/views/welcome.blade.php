@@ -8,6 +8,8 @@
         <a class="text-[#D9C549]" href="#">Ver todos ></a>
        </div>
 
+       <a class="text-white truncate w-[220px] mt-2 pl-1" href="{{route('checkout')}}">Che</a>
+
         <div class="flex gap-1 overflow-x-scroll px-1 [&::-webkit-scrollbar]:hidden">
         @if(isset($products))
         @foreach ($products as $product)
@@ -30,7 +32,7 @@
         </div>
       
        <!-- Banner -->
-     @if($banners)
+     @if(isset($banners))
         <div class="p-3 flex gap-1 overflow-x-scroll px-3  [&::-webkit-scrollbar]:hidden">
             @foreach ($banners as $banner)  
                 <img  class="rounded-lg mr-2" src="img/loja/{{$banner->banner}}" alt="{{$banner->nome}}">

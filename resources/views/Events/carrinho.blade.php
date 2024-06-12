@@ -48,7 +48,7 @@
                                 <button type="submit" name="action" value="decrement" class="bg-[#D9C549] p-1 w-9 rounded-md">
                                     <i class="bi bi-caret-left-fill text-white"></i>
                                 </button>
-                                <small class="text-white p-2">{{ session('quantidade', 0) }}</small>
+                                <small class="text-white p-2">{{ session('quantidade', 1)  }}</small>
                                 <button type="submit" name="action" value="increment" class="border p-1 rounded-md w-9">
                                     <i class="bi bi-caret-right-fill text-white"></i>
                                 </button>
