@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Product;
+use Laravel\Cashier\Billable;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, Billable;
 
     /**
      * The attributes that are mass assignable.
@@ -59,7 +60,7 @@ class User extends Authenticatable
 
     public function carrinho()
     {
-        return $this->belongsToMany(Product::class, 'carrinho');
+        return $this->belongsToMany(Product::class, 'carrinhos');
     }
 
     public function endereco()
@@ -67,9 +68,10 @@ class User extends Authenticatable
         return $this->hasOne(Endereco::class);
     }
 
-    public function pedidos()
+
+    public function payments()
     {
-        return $this->hasMany(Pedido::class);
+        return $this->hasMany(Payment::class);
     }
 
 }

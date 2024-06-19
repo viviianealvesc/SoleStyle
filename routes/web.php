@@ -5,11 +5,14 @@ use App\Http\Controllers\FavoritesController;
 use App\Http\Controllers\MarcasController;
 use App\Http\Controllers\PayController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\SubscribeController;
+use Illuminate\Http\Request;
+use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Support\Facades\Route;
 
 
 /******* Produtos *******/
-Route::get('/', [ProductController::class, 'index'])->name('/');
+Route::get('/', [ProductController::class, 'index'])->name('home');
 Route::get('/produto/{id}/{index}', [ProductController::class, 'show'])->name('product.product');
 Route::get('/produto/{id}', [ProductController::class, 'show'])->name('product.product');
 Route::get('/register', [ProductController::class, 'pageRegister'])->name('product.pageLogin');
@@ -18,14 +21,15 @@ Route::get('/login', [ProductController::class, 'pageRegister'])->name('login');
 
 /******* Favoritos *******/
 Route::get('/events/favoritos', [FavoritesController::class, 'pageFavorito'])->name('favorites.pageFavorito')->middleware('auth');;
-Route::get('/favoritos/{id}', [FavoritesController::class, 'add'])->name('favorites.add')->middleware('auth');;
+Route::post('/favoritos/{id}', [FavoritesController::class, 'add'])->name('favorites.add')->middleware('auth');;
 Route::get('/remove/{id}', [FavoritesController::class, 'remove'])->name('remove');
+Route::get('/remove-coracao/{id}', [FavoritesController::class, 'removeCoracao'])->name('remove-coracao');
 
 
 /******* Carrinho *******/
 Route::get('/events/carrinho', [CartController::class, 'pageCarrinho'])->name('cart.pageCarrinho')->middleware('auth');;
 Route::post('/events/carrinho/atualizar', [CartController::class, 'atualizarQuantidade'])->name('cart.quant')->middleware('auth');;
-Route::get('/carrinho/{id}', [CartController::class, 'add'])->name('cart.add')->middleware('auth');;
+Route::post('/carrinho/{id}', [CartController::class, 'add'])->name('cart.add')->middleware('auth');;
 Route::get('/removeCart/{id}', [CartController::class, 'remove'])->name('cart.remove');
 Route::post('/update', [CartController::class, 'update'])->name('cart.update');
 
@@ -49,10 +53,25 @@ Route::get('/google/redirect', [App\Http\Controllers\GoogleLoginController::clas
 Route::get('/google/callback', [App\Http\Controllers\GoogleLoginController::class, 'handleGoogleCallback'])->name('google.callback');
 
 
-/******* PayPal *******/
+/******* PayPal 
 Route::get('/checkout', '\App\Http\Controllers\PayPalController@index')->name('checkout');
 Route::get('/create/{amount}', '\App\Http\Controllers\PayPalController@create');
-Route::post('/complete', '\App\Http\Controllers\PayPalController@complete');
+Route::post('/complete', '\App\Http\Controllers\PayPalController@complete');*******/
+
+
+
+
+Route::post('/subscribe',[ SubscribeController::class, '__invoke'])->name('subscribe')->middleware([Authenticate::class]);
+Route::get('/billing-portal', function (Request $request) {
+    return $request->user()->redirectToBillingPortal();
+})->name('portal');
+
+Route::match(['get', 'post'],'/payment/success', [SubscribeController::class, 'success'])->name('payment.success');
+Route::get('/payment/cancel', [SubscribeController::class, 'cancel'])->name('payment.cancel');
+
+
+
+
 
 
 Route::get('/logout', [App\Http\Controllers\Auth\AuthenticatedSessionController::class, 'destroy'])

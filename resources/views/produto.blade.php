@@ -4,7 +4,7 @@
 
     <main>
        <div class="pt-10 ml-6 flex items-center justify-between">
-        <a href="{{Route('/')}}"><img width="30" src="{{ asset('img/desfazer.png')}}" alt="Voltar"></a>
+        <a href="{{Route('home')}}"><img width="30" src="{{ asset('img/desfazer.png')}}" alt="Voltar"></a>
 
         @if(session('msg'))
             <div class="alert border border-success alert-warning alert-dismissible fade show bg-[#3F3F3F] w-72 h-14 mr-5" role="alert">
@@ -37,9 +37,10 @@
                     <h2 class="text-[#D9C549] font-semibold pt-9">Cores</h2>
                     <div class="flex" id="color-selector">
                         @foreach ($product->cores as $index => $cor)
-                            <form action="/produto/{{$product->id . '/' . $index }}" method="GET" class="inline">
-                                <button type="submit" class="w-20 rounded-md m-1 p-0 border-none bg-none">
-                                <img class="w-20 rounded-md m-1 color-option" src="/img/loja/{{ $cor['avatar'][0]}}" data-index="{{ $index }}" alt="Cor {{ $cor['color'] }}">
+                            <form action="/produto/{{$product->id . '/' . $index }}" method="GET" class="inline ">
+                                <input type="hidden" name="cor" value="{{ $cor['color'] }}">
+                                <button type="submit" class="w-20 rounded-md m-1 p-0 border-none bg-none color-option">
+                                    <img class="w-20 rounded-md m-1 color-option-img" src="/img/loja/{{ $cor['avatar'][0] }}" data-index="{{ $index }}" alt="Cor {{ $cor['color'] }}">
                                 </button>
                             </form>
                         @endforeach
@@ -52,17 +53,14 @@
           <!-- Numeração -->
           <div>
             <p class="text-[#D9C549] font-semibold pl-7 pt-9">Numeração</p>
-            <div class="flex items-center pl-7 pt-3">
+            <div class="flex items-center pl-7 pt-3" id="num-selector">
                 @if($selectedColor)
                     @foreach ($selectedColor['numeracao'] as $numero)
-                        <label class="flex items-center space-x-2 cursor-pointer">
-                            <input type="checkbox" class="hidden peer">
-                            <span class="w-9 h-8 bg-[#3F3F3F] rounded-md peer-checked:bg-blue-500 peer-checked:border-blue-500 peer-checked:text-white flex items-center justify-center">
-                                <p class="p-2 font-bold text-white">{{ $numero }}</p>
-                                <svg class="hidden w-4 h-4 text-white peer-checked:block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                </svg>
-                            </span>
+                    <label class="flex items-center space-x-2 cursor-pointer">
+                        <input type="radio" name="numeracao" value="{{ $numero }}" class="hidden peer numeracao-option">
+                        <span class="w-9 h-8 bg-[#3F3F3F] rounded-md peer-checked:bg-blue-500 peer-checked:border-blue-500 peer-checked:text-white flex items-center justify-center">
+                            <p class="p-2 font-bold text-white">{{ $numero }}</p>
+                        </span>
                         </label>
                     @endforeach
                 @else
@@ -86,16 +84,24 @@
          <!--Adicionar ao carrinho -->
          <div class="flex items-center pl-9 pt-16 mb-20">
            <div class="flex items-center">
-             <form action="/carrinho/{{ $product->id }}" method="GET">
-                 <a class="bg-[#D9C549] font-bold p-3 w-64 rounded-md"  href="/carrinho/{{ $product->id }}"  onclick="event.preventDefault(); this.closest('form').submit(); ">Adicionar ao carrinho</a>
+             <form id="add-to-cart-form" action="/carrinho/{{ $product->id }}" method="POST">
+                @csrf
+                <input type="hidden" name="cor" id="fav-selected-cor" value="{{ isset($corSelec) ? $corSelec : '' }}">
+                <input type="hidden" name="numeracao" id="fav-selected-numeracao" value="">
+                <button type="submit" class="bg-[#D9C549] font-bold p-3 w-64 rounded-md">Adicionar ao carrinho</button>
              </form>
              @if(!$favorito)
-                <form action="/favoritos/{{ $product->id }}" method="GET">
-                    <a class=" rounded-md " href="/favoritos/{{ $product->id }}"  onclick="event.preventDefault(); this.closest('form').submit(); "><img width="30" class="m-3 " src="{{ asset('img/coracao.png')}}" alt=""></a>
-                </form>
+             <form id="add-to-favorites-form" action="/favoritos/{{ $product->id }}" method="POST">
+                @csrf
+                <input type="hidden" name="cor" id="fav-selected-cor" value="{{ isset($corSelec) ? $corSelec : '' }}">
+                <input type="hidden" name="numeracao" id="fav-selected-numeracao" value="">
+                <button type="submit" class="rounded-md">
+                    <img width="30" class="m-3" src="{{ asset('img/coracao.png') }}" alt="">
+                </button>
+            </form>
             @else
-                <form action="/favoritos/{{ $product->id }}" method="GET">
-                    <a class=" rounded-md " href="/favoritos/{{ $product->id }}"  onclick="event.preventDefault(); this.closest('form').submit(); "><img width="30" class="m-3 " src="{{ asset('img/coracao2.png')}}" alt=""></a>
+                <form action="/remove-coracao/{{$product->id}}" method="GET">
+                    <a class=" rounded-md " href="/remove-coracao/{{$product->id}}"  onclick="event.preventDefault(); this.closest('form').submit(); "><img width="30" class="m-3 " src="{{ asset('img/coracao2.png')}}" alt=""></a>
                 </form>
              @endif
           
@@ -221,6 +227,32 @@
             });
         });
     </script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        let colorForms = document.querySelectorAll('.color-form');
+        let selectedColorInput = document.getElementById('fav-selected-cor');
+        let selectedNumeracaoInput = document.getElementById('fav-selected-numeracao');
+
+        colorForms.forEach(function (form) {
+            let colorInput = form.querySelector('.color-input');
+            let colorOptionButton = form.querySelector('.color-option');
+
+            colorOptionButton.addEventListener('click', function () {
+                let selectedIndex = colorOptionButton.dataset.index;
+                selectedColorInput.value = colorInput.value;
+            });
+        });
+
+        document.querySelectorAll('.numeracao-option').forEach(function (element) {
+            element.addEventListener('click', function () {
+                selectedNumeracaoInput.value = element.value;
+            });
+        });
+    });
+</script>
+
     
 </body>
 </html>

@@ -7,7 +7,7 @@
         @if(!isset($carrinhos) || $carrinhos->isEmpty())
         <div class="flex items-center justify-center mt-9">
            <div>
-              <h1 class="text-center opacity-40 text-white font-semibold">Não há produtos favoritados!</h1>
+              <h1 class="text-center opacity-40 text-white font-semibold">Não há produtos no carrinho!</h1>
               <img class="opacity-40" src="{{asset('/img/carrinho-vazio.png')}}" alt="">
            </div>
         </div>
@@ -40,6 +40,10 @@
                             <div class="flex m-1 mb-2 items-center">
                                 <p class="text-[#D9C549] font-semibold mr-1">{{$carrinho->preco - $carrinho->discount}}</p>
                                 <small class="text-[#7E7E7E] line-through">{{$carrinho->preco}}</small>
+                                @foreach ($cor as $cores)
+                                  <p class="text-[#D9C549] ml-5">{{$cores->pivot->cor}}</p><small class="text-[#D9C549] mx-1">,</small>
+                                  <p class="text-[#D9C549]">{{$cores->pivot->numeracao}}</p>
+                                @endforeach
                             </div>
                         @endif
                         <div class="flex items-center">
@@ -89,7 +93,16 @@
 
     <!-- Botão finalizar pedido -->
     <div class="m-3 mt-7">
-      <a href="{{route('finalizarPedido')}}" class="p-2 rounded-md w-full bg-[#D9C549]">Finalizar pedido</a>
+
+        <form action="{{route('finalizarPedido')}}">
+            @csrf
+
+            <input type="hidden" name="cor" value="{{$cores->pivot->cor}}">
+            <input type="hidden" name="numeracao" value="{{$cores->pivot->numeracao}}">
+
+            <button class="p-2 rounded-md w-full bg-[#D9C549]" href="{{route('finalizarPedido')}}">Continuar</button>
+        </form>
+    
     </div>
     @endif
 </main>

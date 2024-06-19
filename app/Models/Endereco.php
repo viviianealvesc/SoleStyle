@@ -27,8 +27,8 @@ class Endereco extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function pedidos()
+    public function payments()
     {
-        return $this->hasMany(Pedido::class);
+        return $this->hasMany(Payment::class);
     }
 }

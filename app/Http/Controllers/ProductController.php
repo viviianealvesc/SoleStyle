@@ -8,6 +8,7 @@ use App\Models\Endereco;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class ProductController extends Controller
 {
@@ -29,11 +30,11 @@ class ProductController extends Controller
             $products = Product::all();
             $banners = Banner::all();
 
-            return view('/welcome', ['products' => $products,'banners' => $banners]);
+            return view('welcome', ['products' => $products,'banners' => $banners]);
 
         }
 
-       return view('/welcome', ['products' => $products, 'search' => $search]);
+       return view('welcome', ['products' => $products, 'search' => $search]);
     }
 
 
@@ -44,6 +45,7 @@ class ProductController extends Controller
 
         $selectedColor = $selectedColorIndex !== null ? $product->cores[$selectedColorIndex] : null;
 
+    
         $user = auth()->user();
 
         $favorito = false;
@@ -58,14 +60,31 @@ class ProductController extends Controller
             }
         }
 
+        foreach ($product->cores as $index => $cor) {
+            if ($selectedColor && $cor['color'] === $selectedColor['color']) {
+             
+                $corSelec = $selectedColor['color']; 
+
+                return view('/produto', ['product' => $product, 'selectedColor' => $selectedColor, 'selectedColorIndex' => $selectedColorIndex, 'corSelec' => $corSelec,  'favorito' => $favorito]);
+
+            }
+        }
+
   
         return view('/produto', ['product' => $product, 'selectedColor' => $selectedColor, 'selectedColorIndex' => $selectedColorIndex, 'favorito' => $favorito]);
     }
 
 
 
-    public function finalizarPedido()
+    public function finalizarPedido(Request $request)
     {
+        $cor = $request->input('cor');
+        $numeracao = $request->input('numeracao');
+        
+        // Armazene as informações na sessão
+        Session::put('cor', $cor);
+        Session::put('numeracao', $numeracao);
+
         $user = auth()->user();
     
         $carrinhos = $user->carrinho;
@@ -87,7 +106,7 @@ class ProductController extends Controller
         $enderecoUser = $user->endereco; 
 
     
-        return view('events.finalizarPedido', compact('carrinhos', 'subtotal', 'totalDesconto', 'total', 'enderecoUser'));
+        return view('events.finalizarPedido', compact('carrinhos', 'subtotal', 'totalDesconto', 'total', 'enderecoUser', 'carrinhos'));
     }
     
 

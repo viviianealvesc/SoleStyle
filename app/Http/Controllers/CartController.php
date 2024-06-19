@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Carrinho;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class CartController extends Controller
 {
@@ -24,19 +26,28 @@ class CartController extends Controller
         }
         
         $total = $subtotal - $totalDesconto;
+
+        $cor = $user->carrinho()->withPivot('cor', 'numeracao')->get();
+
+        Session::put('cor', $cor);
     
-        return view('/events/carrinho', compact('carrinhos', 'subtotal', 'totalDesconto', 'total'));
+        return view('/events/carrinho', compact('carrinhos', 'subtotal', 'totalDesconto', 'total', 'cor'));
 
     }
 
 
-    public function add($id)
+    public function add(Request $request, $id)
     {
-        Product::findOrFail($id);
+        $product = Product::findOrFail($id);
 
         $user = auth()->user();
 
-        $user->carrinho()->attach($id);
+        $favorite = new Carrinho();
+        $favorite->user_id = $user->id;
+        $favorite->product_id = $id;
+        $favorite->cor = $request->input('cor');
+        $favorite->numeracao = $request->input('numeracao');
+        $favorite->save();
 
         return redirect()->route('cart.pageCarrinho')->with('msg', 'Produto adicionado ao carrinho!');
     }

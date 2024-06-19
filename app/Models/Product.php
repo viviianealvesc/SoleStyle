@@ -38,11 +38,11 @@ class Product extends Model
 
     public function carrinho()
     {
-        return $this->belongsToMany(User::class, 'carrinho');
+        return $this->belongsToMany(User::class, 'carrinhos');
     }
 
-    public function pedidos()
+    public function payments()
     {
-        return $this->hasMany(Pedido::class);
+        return $this->hasMany(Payment::class);
     }
 }

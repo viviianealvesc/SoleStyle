@@ -31,14 +31,21 @@
         <div class="border rounded-lg p-2 mt-3">
             <div class="flex justify-between">
                <div class="flex">
+               <div class="flex items-center">
                 <a href="/produto/{{ $favorito->id }}">
-                    <img class="w-28 p-2 bg-[#3F3F3F] rounded-lg" src="{{ asset('img/image-removebg-preview.png')}}" alt="">
+                    <img class="w-28 rounded-lg" src="/img/loja/{{$favorito->imagem}}" alt="">
                  </a>
+               </div>
                  <div class="m-3">
                      <p class="text-white truncate w-[largura] mt-2">{{ $favorito->nome }}</p>
                      <p class="text-[#D9C549] font-semibold">R$ {{ $favorito->preco }}</p>
                      <small class="text-[#7E7E7E] line-through">74,90</small>
+                        @foreach ($cor as $cores)
+                          <p class="text-[#D9C549]">{{$cores->pivot->cor}}</p>
+                        @endforeach
                  </div>
+
+                 
                </div>
                <!-- Excluir dos favoritos -->
                <a href="/remove/{{ $favorito->id }}"><i class="bi bi-x text-white"></i></a>
@@ -50,6 +57,9 @@
             </div>
         </div>
        @endforeach
+
+      
+     
       @endif
 
       

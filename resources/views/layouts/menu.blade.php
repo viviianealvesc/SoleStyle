@@ -8,19 +8,22 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <script src="https://js.stripe.com/v3/"></script>
+
 </head>
 
 <body class="bg-[#181818]">
     <header class="shadow-lg bg-[#D9C549]">
         <nav class="flex justify-between pt-4 p-4">
             <div>
-               <a href="{{Route('/')}}"><img width="80" src="{{ asset('img/logo.png') }}" alt=""></a> 
+               <a href="{{Route('home')}}"><img width="80" src="{{ asset('img/logo.png') }}" alt=""></a> 
             </div>
             <div class="pt-6">
                 <button id="deactivateButton"><img src="{{ asset('img/menu-hamburguer.png') }}" alt="menu-lateral"></button>
             </div>
         </nav>
-        <form action="{{ route('/') }}" method="GET">
+        <form action="{{ route('home') }}" method="GET">
         <div class="flex items-center justify-center pb-3">
           <input class="rounded-lg p-2 bg-[#3F3F3F]" type="text" id="search" name="search" placeholder="O que você procura?">
           <button type="submit"><img class="bg-[#3F3F3F] rounded-md ml-2 p-1" width="40" src="{{ asset('img/lupa (1).png') }}" alt=""></button>
@@ -126,11 +129,13 @@
 
                   <!-------------------------------->
                 <div class="text-white flex flex-col">
-                  <a class="p-1" href="{{Route('/')}}"><i class="bi bi-house pr-3 text-[#D9C549]"></i>Inicio</a>
+                  <a class="p-1" href="{{Route('home')}}"><i class="bi bi-house pr-3 text-[#D9C549]"></i>Inicio</a>
 
                  
                   <a class="p-1" href="{{ Route('favorites.pageFavorito') }}"><i class="bi bi-heart pr-3 text-[#D9C549]"></i>Favoritos</a>
                   <a class="p-1" href="{{ Route('cart.pageCarrinho') }}"><i class="bi bi-basket2-fill pr-3 text-[#D9C549]"></i>Carrinho</a>
+                  <a class="p-1" href="{{ Route('portal') }}"><i class="bi bi-basket2-fill pr-3 text-[#D9C549]"></i>Dados da compra</a>
+                  
 
                   <hr class=" mt-7 mb-7 bg-[#3F3F3F] bg-opacity-75">
 
@@ -229,5 +234,8 @@ function closeAlert() {
     alertBox.style.display = 'none';
 }
 </script>
+
+<script src="https://js.stripe.com/v3/"></script>
+
 
 </html>

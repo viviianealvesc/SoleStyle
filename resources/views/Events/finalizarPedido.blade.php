@@ -5,10 +5,7 @@
 <main>
     <div class=" flex-wrap ">
         <div class="m-4">
-          <form action="" method="POST">
-            @csrf
               <div class="bg-[#3F3F3F] rounded-md p-3 my-3">
-                  <input type="checkbox" id="endereco">
                   <label class="font-semibold text-[#D9C549]" for="endereco">Enviar no meu endereço</label> <br>
                   <!-- aqui irá conter o endereço do usuario. caso não tiver endereço cadastrado ira aparecer a seguinte mensagem: nenhum endereço cadastrado. -->
               
@@ -25,18 +22,10 @@
 
                   <a class="text-white" href="{{ route('endereco')}}">Editar ou adicionar um endereço</a>
               </div>
-
-              <div class="bg-[#3F3F3F] rounded-md p-3">
-                  <input type="checkbox" id="loja">
-                  <label class="font-semibold  text-[#D9C549]" for="loja">Retirar na loja</label>
-                  <!-- aqui irá conter o endereço da loja. -->
-                  <p class="text-white mt-2">Manuel de alcantará 67, Araçatuba - SP</p>
-                  <p class="text-[#676767] my-2">Segunda á sexta das 9hs ás 18hs. - Sábado das 9h ás 12h</p>
-              </div>
           </div>
-        </form>
+      
 
-          <div class="bg-[#3F3F3F] p-3 rounded-md my-4">
+          <div class="bg-[#3F3F3F] p-3 rounded-md m-4">
             <h2 class="text-[#D9C549] font-semibold">Resumo da compra</h2>
             <hr class=" border-[#676767] my-2">
                   <!-- Valor total -->
@@ -65,9 +54,26 @@
     </div>
 
      <!-- Botão finalizar pedido -->
-     <div class="m-10 mt-20 flex text-center justify-center items-center">
-        <a href="{{route('formaPagamento')}}" class="p-2 rounded-md w-48 bg-[#D9C549] font-semibold">Continuar</a>
-      </div>
+
+      <div class="m-3 mt-7">
+        @foreach ($carrinhos as $carrinho)
+        <form action="/subscribe" method="POST">
+            @csrf
+            <input type="hidden" name="id" value="{{$carrinho->id}}">
+            <input type="hidden" name="nome" value="{{$carrinho->nome}}">
+            <input type="hidden" name="preco" value="{{ session('quantidade', 0) * $total }}">
+            <input type="hidden" name="imagem" value="{{$carrinho->imagem}}">
+
+            <div class="mb-5 mt-5">
+              <label for="cupom" class="text-[#D9C549]">Cupom de Desconto:</label>
+              <input type="text" id="cupom" name="cupom">
+            </div>
+        
+            <button type="submit" class="p-2 rounded-md w-full bg-[#D9C549]">Finalizar pedido</button>
+        </form>
+            
+        @endforeach
+    </div>
 </main>
 
 @endsection

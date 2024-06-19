@@ -8,14 +8,14 @@
         <a class="text-[#D9C549]" href="#">Ver todos ></a>
        </div>
 
-       <a class="text-white truncate w-[220px] mt-2 pl-1" href="{{route('checkout')}}">Che</a>
+
 
         <div class="flex gap-1 overflow-x-scroll px-1 [&::-webkit-scrollbar]:hidden">
         @if(isset($products))
         @foreach ($products as $product)
             <div class="p-4">
-                <div class="p-2 rounded-lg w-40">
-                      <a href="/produto/{{ $product->id }}"> <img src="/img/loja/{{ $product->imagem }}" alt=""></a>
+                <div class="p-2  w-48">
+                      <a  href="/produto/{{ $product->id }}"> <img class="rounded-lg" src="/img/loja/{{ $product->imagem }}" alt=""></a>
                 </div>
                 <p class="text-white truncate w-[220px] mt-2 pl-1">{{ $product->nome }}</p>
                 <div class="flex text-center gap-2">

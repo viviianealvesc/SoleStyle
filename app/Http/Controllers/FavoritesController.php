@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Favorito;
 use App\Models\Favoritos;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -14,18 +15,10 @@ class FavoritesController extends Controller
         
         $favoritos = $user->favoritos;
 
+        $cor = $user->favoritos()->withPivot('cor')->get();
 
-        if($user) {
 
-            $nomeUser = $user->name;
-    
-            $emailUser = $user->email;
-        
-    
-            return view('/events/favoritos', ['favoritos' => $favoritos, 'user' => $user, 'nomeUser' => $nomeUser, 'emailUser' => $emailUser]);
-        }
-
-        return view('/events/favoritos', ['favoritos' => $favoritos, 'user' => $user]);
+        return view('/events/favoritos', ['favoritos' => $favoritos, 'user' => $user, 'cor' => $cor]);
     }
 
 
@@ -49,13 +42,18 @@ class FavoritesController extends Controller
       
     }
 
-    public function add($id)
+    public function add(Request $request, $id)
     {
-        Product::findOrFail($id);
+        $product = Product::findOrFail($id);
 
         $user = auth()->user();
 
-        $user->favoritos()->attach($id);
+        $favorite = new Favorito();
+        $favorite->user_id = $user->id;
+        $favorite->product_id = $id;
+        $favorite->cor = $request->input('cor');
+        $favorite->numeracao = $request->input('numeracao');
+        $favorite->save();
 
         $favorito = false;
 
@@ -72,5 +70,15 @@ class FavoritesController extends Controller
         $user->favoritos()->detach($id);
 
         return redirect()->route('favorites.pageFavorito')->with('msg', 'Produto removido!');
+    }
+
+    
+    public function removeCoracao($id)
+    {
+        $user = auth()->user();
+
+        $user->favoritos()->detach($id);
+
+        return redirect()->back()->with('msg', 'Produto removido!');
     }
 }
