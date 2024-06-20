@@ -90,4 +90,9 @@ class SubscribeController extends Controller
    {
        return view('welcome');
    }
+
+   public function pedidos()
+   {
+       return view('welcome');
+   }
 }

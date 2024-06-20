@@ -21,17 +21,17 @@ Route::get('/login', [ProductController::class, 'pageRegister'])->name('login');
 
 /******* Favoritos *******/
 Route::get('/events/favoritos', [FavoritesController::class, 'pageFavorito'])->name('favorites.pageFavorito')->middleware('auth');;
-Route::post('/favoritos/{id}', [FavoritesController::class, 'add'])->name('favorites.add')->middleware('auth');;
-Route::get('/remove/{id}', [FavoritesController::class, 'remove'])->name('remove');
-Route::get('/remove-coracao/{id}', [FavoritesController::class, 'removeCoracao'])->name('remove-coracao');
+Route::post('/favoritos/{id}', [FavoritesController::class, 'add'])->name('favorites.add')->middleware('auth');
+Route::get('/remove/{id}', [FavoritesController::class, 'remove'])->name('remove')->middleware('auth');
+Route::get('/remove-coracao/{id}', [FavoritesController::class, 'removeCoracao'])->name('remove-coracao')->middleware('auth');
 
 
 /******* Carrinho *******/
-Route::get('/events/carrinho', [CartController::class, 'pageCarrinho'])->name('cart.pageCarrinho')->middleware('auth');;
-Route::post('/events/carrinho/atualizar', [CartController::class, 'atualizarQuantidade'])->name('cart.quant')->middleware('auth');;
-Route::post('/carrinho/{id}', [CartController::class, 'add'])->name('cart.add')->middleware('auth');;
-Route::get('/removeCart/{id}', [CartController::class, 'remove'])->name('cart.remove');
-Route::post('/update', [CartController::class, 'update'])->name('cart.update');
+Route::get('/events/carrinho', [CartController::class, 'pageCarrinho'])->name('cart.pageCarrinho')->middleware('auth');
+Route::post('/events/carrinho/atualizar', [CartController::class, 'atualizarQuantidade'])->name('cart.quant')->middleware('auth');
+Route::post('/carrinho/{id}', [CartController::class, 'add'])->name('cart.add')->middleware('auth');
+Route::get('/removeCart/{id}', [CartController::class, 'remove'])->name('cart.remove')->middleware('auth');
+Route::post('/update', [CartController::class, 'update'])->name('cart.update')->middleware('auth');
 
 
 /******* Navegue por marcas *******/
@@ -40,11 +40,11 @@ Route::get('/marca/{nome}', [MarcasController::class, 'marca'])->name('marca');
 
 
 /******* Finalizando o pedido *******/
-Route::match(['get', 'post'],'/pedido', [ProductController::class, 'finalizarPedido'])->name('finalizarPedido');
-Route::get('/pedido/endereco', [ProductController::class, 'cadastrarEndereco'])->name('endereco');
-Route::post('/endereco', [ProductController::class, 'enviarEndereco'])->name('cadastrar.endereco');
-Route::post('/pedido', [ProductController::class, 'cupom'])->name('cupom');
-Route::get('/formaPagamento', [ProductController::class, 'formaPagamento'])->name('formaPagamento');
+Route::match(['get', 'post'],'/pedido', [ProductController::class, 'finalizarPedido'])->name('finalizarPedido')->middleware('auth');
+Route::get('/pedido/endereco', [ProductController::class, 'cadastrarEndereco'])->name('endereco')->middleware('auth');
+Route::post('/endereco', [ProductController::class, 'enviarEndereco'])->name('cadastrar.endereco')->middleware('auth');
+Route::post('/pedido', [ProductController::class, 'cupom'])->name('cupom')->middleware('auth');
+Route::get('/formaPagamento', [ProductController::class, 'formaPagamento'])->name('formaPagamento')->middleware('auth');
 Route::post('/events/pag', [PayController::class, 'pagarCompra'])->name('pagarCompra'); //pix
 
 
@@ -62,9 +62,8 @@ Route::post('/complete', '\App\Http\Controllers\PayPalController@complete');****
 
 
 Route::post('/subscribe',[ SubscribeController::class, '__invoke'])->name('subscribe')->middleware([Authenticate::class]);
-Route::get('/billing-portal', function (Request $request) {
-    return $request->user()->redirectToBillingPortal();
-})->name('portal');
+Route::get('/billing-portal', [ProductController::class, 'listarPedido'])->name('portal')->middleware('auth');
+Route::get('/pedido/{id}', [ProductController::class, 'cancelarPedido'])->name('cancelar-pedido')->middleware('auth');
 
 Route::match(['get', 'post'],'/payment/success', [SubscribeController::class, 'success'])->name('payment.success');
 Route::get('/payment/cancel', [SubscribeController::class, 'cancel'])->name('payment.cancel');

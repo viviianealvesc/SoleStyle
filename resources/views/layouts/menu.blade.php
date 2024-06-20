@@ -35,6 +35,8 @@
     @yield('content')
 
     <div id="modalContainer"></div>
+    <div id="container"></div>
+    
     
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> 
@@ -146,7 +148,7 @@
                     @auth
 
                     <a href="{{route('logout')}}" id="deactivate" class="p-1"><i class="bi bi-box-arrow-left pr-3 text-[#D9C549]"></i>Sair da conta</a>
-                    <div id="Container"></div>
+                    
                     @endauth
                   </div>
                  </div>
@@ -221,7 +223,7 @@
       `;
       
       // Inserir o HTML do modal dentro do elemento modalContainer
-      document.getElementById("Container").innerHTML = modalHtml;
+      document.getElementById("container").innerHTML = modalHtml;
   });
 
 </script>

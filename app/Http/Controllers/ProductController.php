@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Banner;
 use App\Models\Cupom;
 use App\Models\Endereco;
+use App\Models\Payment;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -207,6 +208,27 @@ class ProductController extends Controller
     }
 
 
+    public function listarPedido() {
+
+        $user = auth()->user();
+
+        $pedidos = $user->payments;
+
+        return view('events.pedido', ['pedidos' => $pedidos]);
+    }
+
+
+    public function cancelarPedido($id) {
+
+        $pedido = Payment::findOrFail($id);
+
+        $pedido->status = 'cancelado';
+        $pedido->save();
+  
+        return redirect()->back();
+    }
+
+
 
     public function pageRegister()
     {
@@ -217,45 +239,10 @@ class ProductController extends Controller
     {
         return view('livewire.page.auth.login');
     }
+
+
+
+
    
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
 }
