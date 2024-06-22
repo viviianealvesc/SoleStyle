@@ -38,7 +38,7 @@ class Product extends Model
 
     public function carrinho()
     {
-        return $this->belongsToMany(User::class, 'carrinhos');
+        return $this->hasMany(Carrinho::class);
     }
 
     public function payments()

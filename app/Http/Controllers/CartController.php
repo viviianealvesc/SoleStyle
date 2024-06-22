@@ -15,61 +15,66 @@ class CartController extends Controller
         
         $carrinhos = $user->carrinho;
 
-        $subtotal = 0;
-        $totalDesconto = 0;
-    
+        $totalParesTenis = 0;
+
         foreach ($carrinhos as $item) {
-            $subtotal += $item['preco'];
-            if (!empty($item['discount'])) {
-                $totalDesconto += $item['discount'];
-            }
+            $totalParesTenis += $item->quantity;
+            $total = $item->product->preco - $item->product->discount ;
         }
         
-        $total = $subtotal - $totalDesconto;
 
-        $cor = $user->carrinho()->withPivot('cor', 'numeracao')->get();
+        $desconto = 0;
+        if ($totalParesTenis >= 2) {
+            $desconto =  7; 
+        }
 
-        Session::put('cor', $cor);
-    
-        return view('/events/carrinho', compact('carrinhos', 'subtotal', 'totalDesconto', 'total', 'cor'));
-
+        return view('/events/carrinho', compact('carrinhos', 'desconto', 'totalParesTenis', 'total'));
     }
 
 
     public function add(Request $request, $id)
     {
-        $product = Product::findOrFail($id);
+        Product::findOrFail($id);
 
         $user = auth()->user();
 
-        $favorite = new Carrinho();
-        $favorite->user_id = $user->id;
-        $favorite->product_id = $id;
-        $favorite->cor = $request->input('cor');
-        $favorite->numeracao = $request->input('numeracao');
-        $favorite->save();
+        $carrinho = new Carrinho();
+        $carrinho->user_id = $user->id;
+        $carrinho->product_id = $id;
+        $carrinho->cor = $request->input('cor');
+        $carrinho->numeracao = $request->input('numeracao');
+        $carrinho->save();
 
-        return redirect()->route('cart.pageCarrinho')->with('msg', 'Produto adicionado ao carrinho!');
+        $carrinho = false;
+       
+
+        return redirect()->route('cart.pageCarrinho', ['carrinho' => $carrinho])->with('msg', 'Produto adicionado ao carrinho!');
     }
 
-    public function atualizarQuantidade(Request $request)
+
+
+    public function atualizarQuantidade(Request $request, $id)
     {
         $action = $request->input('action');
-        $quantidade = $request->session()->get('quantidade', 1);
 
+        $carrinho = Carrinho::findOrFail($id);
 
         if ($action === 'increment') {
-                $quantidade++ ;
+            $carrinho->quantity++;
         } elseif ($action === 'decrement') {
-            if ($quantidade > 1) {
-                $quantidade = $quantidade - 1; 
+            if ($carrinho->quantity > 1) {
+                $carrinho->quantity--;
             }
         }
 
-        $request->session()->put('quantidade', $quantidade);
+        $carrinho->save();
+        
+
+       
 
         return redirect()->back();
     }
+    
 
     public function remove($id)
     {
@@ -79,9 +84,10 @@ class CartController extends Controller
 
         $user->carrinho()->detach($id);
 
-        return redirect()->route('cart.pageCarrinho')->with('msg', 'Produto excluido!');
+        return redirect()->back()->with('msg', 'Produto excluido!');
     }
 
+ 
     public function update(Request $request)
     {
         // Lógica para atualizar a quantidade de um item no carrinho

@@ -5,19 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Cupom extends Model
+class Estrela extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 
-        'code',
-        'discount',
-        'expiry_date',
+        'user_id',
+        'ponto',
     ];
 
-    public function users()
-    {
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    public function user() {
         return $this->belongsTo(User::class);
     }
 }

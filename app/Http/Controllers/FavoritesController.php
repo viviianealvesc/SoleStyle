@@ -6,6 +6,7 @@ use App\Models\Favorito;
 use App\Models\Favoritos;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class FavoritesController extends Controller
 {
@@ -15,8 +16,9 @@ class FavoritesController extends Controller
         
         $favoritos = $user->favoritos;
 
-        $cor = $user->favoritos()->withPivot('cor')->get();
+        $cor = $user->favoritos()->withPivot('cor', 'numeracao')->get();
 
+        Session::put('cor', $cor);
 
         return view('/events/favoritos', ['favoritos' => $favoritos, 'user' => $user, 'cor' => $cor]);
     }
@@ -52,7 +54,7 @@ class FavoritesController extends Controller
         $favorite->user_id = $user->id;
         $favorite->product_id = $id;
         $favorite->cor = $request->input('cor');
-        $favorite->numeracao = $request->input('numeracao');
+        $favorite->numeracao = 34;
         $favorite->save();
 
         $favorito = false;

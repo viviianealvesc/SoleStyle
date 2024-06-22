@@ -81,33 +81,47 @@ class ProductController extends Controller
     {
         $cor = $request->input('cor');
         $numeracao = $request->input('numeracao');
+        $subtotal = $request->input('subtotal');
+        $desconto = $request->input('desconto');
+        $total = $request->input('total');
         
         // Armazene as informações na sessão
         Session::put('cor', $cor);
         Session::put('numeracao', $numeracao);
+        Session::put('subtotal', $subtotal);
+        Session::put('desconto', $desconto);
+        Session::put('total', $total);
+
 
         $user = auth()->user();
     
-        $carrinhos = $user->carrinho;
+        $cart = $user->carrinho;
+
+        foreach($cart as $carrinho) {
+            $id = $carrinho->id;
+            $nome = $carrinho->nome;
+            $imagem = $carrinho->imagem;
+
+        }
     
-        $subtotal = 0;
+        /*$subtotal = 0;
         $totalDesconto = 0;
         $valorDesconto = 0;
     
-            foreach ($carrinhos as $item) {
+            foreach ($cart as $item) {
                 $subtotal += $item->preco;
                 if (!empty($item->discount)) {
                     $totalDesconto += $item->discount;
                 }
             }
     
-        $total = $subtotal - $totalDesconto;
+        $total = $subtotal - $totalDesconto; */
     
         // Pegando o endereco do usuario logado
         $enderecoUser = $user->endereco; 
 
     
-        return view('events.finalizarPedido', compact('carrinhos', 'subtotal', 'totalDesconto', 'total', 'enderecoUser', 'carrinhos'));
+        return view('events.finalizarPedido', compact( 'total', 'enderecoUser', 'id', 'nome', 'imagem'));
     }
     
 
@@ -228,6 +242,38 @@ class ProductController extends Controller
         return redirect()->back();
     }
 
+
+    public function estrelas() {
+
+        $user = auth()->user();
+
+        $estrelas = $user->estrela;
+
+        if(count($estrelas) == 2) {
+             // Concede o cupom de desconto
+             $this->concederCupom($user);
+
+            foreach ($estrelas as $estrela) {
+                $estrela->delete();
+            }
+        }
+
+
+        return view('profile', ['estrelas' => $estrelas, 'user' => $user]);
+    }
+
+
+    private function concederCupom($user)
+    {
+        Cupom::create([
+            'user_id' => $user->id,
+            'code' => '40PERCENTOFF', 
+            'discount' => 40,
+            'expiry_date' => now()->addMonth(), 
+        ]);
+
+        //Notification::send($user, new CouponGrantedNotification('40PERCENTOFF'));
+    }
 
 
     public function pageRegister()

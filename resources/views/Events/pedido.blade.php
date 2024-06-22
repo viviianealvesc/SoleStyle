@@ -3,24 +3,26 @@
 @section('content')
 
 <div>
-    <h1 class="text-[#D9C549]">Dados da compla</h1>
+    <h1 class="text-[#D9C549]">Minhas compras</h1>
 
     @foreach ($pedidos as $pedido)
     <div class="flex justify-between my-3 mx-2 p-3 bg-[#3F3F3F] rounded-md flex-wrap ">
         <div class="flex items-center">
             <img class="w-28 rounded-md" src="/img/loja/{{$pedido->product->imagem}}" alt="">
             <div class="m-2">
-                <p class="text-white">{{$pedido->endereco->rua}}</p>
-                <p class="text-white">Informações: {{$pedido->cor}}, {{$pedido->numeracao}}</p>  
-                <p class="bg-[#f0d83a75] p-1 mt-2 text-center rounded-md">{{$pedido->status}}</p>
+                <p class="text-white">{{$pedido->product->nome}}</p>
+                <p class="text-[#767676]"><span class="text-[#f0d83a75]">Cor:</span> {{$pedido->cor}}, <span class="text-[#f0d83a75]">Numeração: </span>{{$pedido->numeracao}}</p>  
+                <p class="text-[#767676]"><span class="text-[#f0d83a75]">Total do Pedido:</span> R${{$pedido->total}}</p>  
+              </div>
+            
             </div>
-        </div>
         @if(isset($pedido->status) && $pedido->status == 'cancelado')
             <div class="flex justify-end items-center w-full">
                 <p class="bg-[#f75a5a] text-white p-2 rounded-md">Cancelado</p>
             </div>
         @else
-            <div class="flex justify-end items-center w-full">
+            <div class="flex justify-between items-center w-full">
+              <p class="text-[#f0d83a75] mt-2 text-center rounded-md">{{$pedido->status}}</p>
                 <button id="{{$pedido->id}}" class="bg-[#D9C549] p-2 rounded-md">Cancelar pedido</button>
             </div>
         @endif

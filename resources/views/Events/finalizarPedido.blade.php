@@ -31,14 +31,14 @@
                   <!-- Valor total -->
                 <div class="flex justify-between m-2">
                     <p class="text-[#7E7E7E]">Subtotal</p>
-                    <p class="text-[#7E7E7E]">R$ {{ number_format($subtotal, 2, ',', '.') }}</p>
+                    <p class="text-[#7E7E7E]">R$ {{ session('subtotal') }}</p>
                 </div>
                 <hr class="border-[#676767] my-2 m-2">
 
-                @if ($totalDesconto > 0)
+                @if(session('desconto') > 0)
                 <div class="flex justify-between m-2">
                     <p class="text-[#7E7E7E]">Descontos</p>
-                    <p class="text-[#7E7E7E] flex justify-end">- R$ {{ number_format(($totalDesconto), 2, ',', '.') }}</p>
+                    <p class="text-[#7E7E7E] flex justify-end">- R$ {{ session('desconto') }}</p>
 
                 </div>
                 <hr class="border-[#676767] my-2 m-2">
@@ -46,7 +46,7 @@
 
                 <div class="flex justify-between m-2">
                     <p class="text-white font-semibold">Total</p>
-                    <p class="text-white font-semibold">R$ {{ session('quantidade', 0) * $total }}</p>
+                    <p class="text-white font-semibold">R$ {{ session('total') }}</p>
                 </div>
             </div>
           </div>
@@ -56,13 +56,12 @@
      <!-- Botão finalizar pedido -->
 
       <div class="m-3 mt-7">
-        @foreach ($carrinhos as $carrinho)
         <form action="/subscribe" method="POST">
             @csrf
-            <input type="hidden" name="id" value="{{$carrinho->id}}">
-            <input type="hidden" name="nome" value="{{$carrinho->nome}}">
+            <input type="hidden" name="id" value="{{$id}}">
+            <input type="hidden" name="nome" value="{{$nome}}">
             <input type="hidden" name="preco" value="{{ session('quantidade', 0) * $total }}">
-            <input type="hidden" name="imagem" value="{{$carrinho->imagem}}">
+            <input type="hidden" name="imagem" value="{{$imagem}}">
 
             <div class="mb-5 mt-5">
               <label for="cupom" class="text-[#D9C549]">Cupom de Desconto:</label>
@@ -72,7 +71,6 @@
             <button type="submit" class="p-2 rounded-md w-full bg-[#D9C549]">Finalizar pedido</button>
         </form>
             
-        @endforeach
     </div>
 </main>
 

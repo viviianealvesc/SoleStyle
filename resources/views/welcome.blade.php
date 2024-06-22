@@ -20,10 +20,10 @@
                 <p class="text-white truncate w-[220px] mt-2 pl-1">{{ $product->nome }}</p>
                 <div class="flex text-center gap-2">
                     @if($product->discount == 0.00)
-                        <p class="text-[#D9C549] font-semibold pl-1">{{ $product->preco }}</p>
+                        <p class="text-[#D9C549] font-semibold pl-1">{{  number_format($product->preco, 2, ',', '.') }}</p>
                     @else
-                        <p class="text-[#D9C549] font-semibold pl-1">{{$product->preco - $product->discount}}</p>
-                        <small class="text-[#7E7E7E] line-through">{{ $product->preco }}</small>
+                        <p class="text-[#D9C549] font-semibold pl-1">{{ number_format($product->preco - $product->discount, 2, ',', '.') }}</p>
+                        <small class="text-[#7E7E7E] line-through">{{  number_format($product->preco, 2, ',', '.') }}</small>
                     @endif
                 </div>
             </div>

@@ -28,7 +28,8 @@ Route::get('/remove-coracao/{id}', [FavoritesController::class, 'removeCoracao']
 
 /******* Carrinho *******/
 Route::get('/events/carrinho', [CartController::class, 'pageCarrinho'])->name('cart.pageCarrinho')->middleware('auth');
-Route::post('/events/carrinho/atualizar', [CartController::class, 'atualizarQuantidade'])->name('cart.quant')->middleware('auth');
+Route::match(['get', 'post'],'/events/carrinho/{id}', [CartController::class, 'atualizarQuantidade'])->name('atualiza-cart')->middleware('auth');
+
 Route::post('/carrinho/{id}', [CartController::class, 'add'])->name('cart.add')->middleware('auth');
 Route::get('/removeCart/{id}', [CartController::class, 'remove'])->name('cart.remove')->middleware('auth');
 Route::post('/update', [CartController::class, 'update'])->name('cart.update')->middleware('auth');
@@ -81,7 +82,7 @@ Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-Route::view('profile', 'profile')
+    Route::get('profile', [ProductController::class, 'estrelas'])
     ->middleware(['auth'])
     ->name('profile');
 

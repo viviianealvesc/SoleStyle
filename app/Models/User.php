@@ -50,7 +50,7 @@ class User extends Authenticatable
 
     public function cupons()
     {
-        return $this->belongsToMany(Cupom::class, 'cupom_usados');
+        return $this->hasMany(Cupom::class);
     }
 
     public function favoritos()
@@ -60,8 +60,14 @@ class User extends Authenticatable
 
     public function carrinho()
     {
-        return $this->belongsToMany(Product::class, 'carrinhos');
+        return $this->hasMany(Carrinho::class);
     }
+
+    public function estrela()
+    {
+        return $this->hasMany(Estrela::class);
+    }
+
 
     public function endereco()
     {
