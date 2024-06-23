@@ -83,7 +83,7 @@
         <div class="border border-[#676767] p-2 mt-36 rounded-md">
             <div class="flex justify-between m-2">
                 <p class="text-[#7E7E7E]">Subtotal</p>
-                <p class="text-[#7E7E7E]">R$ {{ number_format($carrinho->product->preco * $carrinho->quantity, 2, ',', '.') }}</p>
+                <p class="text-[#7E7E7E]">R$ {{ number_format($subtotal, 2, ',', '.') }}</p>
             </div>
             <hr class="border-[#676767] my-2 m-2">
 
@@ -92,11 +92,11 @@
            @if($carrinho->product->discount > 0)
             <div class="flex justify-between mx-2">
                 <p class="text-[#7E7E7E]">Descontos</p>
-                <p class="text-[#7E7E7E] flex justify-end">- R$ {{ number_format($carrinho->product->discount, 2, ',', '.') }}</p>
+                <p class="text-[#7E7E7E] flex justify-end">- R$ {{ number_format($totalDesconto, 2, ',', '.') }}</p>
             </div>
             <div class="w-full flex justify-end">
                 @if ($desconto > 0)
-                  <small class="text-green-400">Você ganhou um desconto de {{ $desconto }}% por adicionar 2 pares de tênis ao seu carrinho!</small>
+                  <small class="text-green-400">Você ganhou um desconto de 7% por adicionar 2 pares de tênis ao seu carrinho!</small>
                 @endif
             </div>
             <hr class="border-[#676767] my-2 m-2">

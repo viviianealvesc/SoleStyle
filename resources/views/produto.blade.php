@@ -50,48 +50,47 @@
          </div>
         </div>
  
-          <!-- Numeração -->
-          <div>
-            <p class="text-[#D9C549] font-semibold pl-7 pt-9">Numeração</p>
-            <div class="flex items-center pl-7 pt-3" id="num-selector">
-                @if($selectedColor)
-                    @foreach ($selectedColor['numeracao'] as $numero)
-                    <label class="flex items-center space-x-2 cursor-pointer">
-                        <input type="radio" name="numeracao" value="{{ $numero }}" class="hidden peer numeracao-option">
-                        <span class="w-9 h-8 bg-[#3F3F3F] rounded-md peer-checked:bg-blue-500 peer-checked:border-blue-500 peer-checked:text-white flex items-center justify-center">
-                            <p class="p-2 font-bold text-white">{{ $numero }}</p>
-                        </span>
-                        </label>
-                    @endforeach
-                @else
-                    @foreach ($product->cores[0]['numeracao'] as $numero)
-                    <label class="flex items-center space-x-2 cursor-pointer">
-                        <input type="checkbox" class="hidden peer">
-                        <span class="w-9 h-8 bg-[#3F3F3F] rounded-md peer-checked:bg-blue-500 peer-checked:border-blue-500 peer-checked:text-white flex items-center justify-center">
-                            <p class="p-2 font-bold text-white">{{ $numero }}</p>
-                            <svg class="hidden w-4 h-4 text-white peer-checked:block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
-                        </span>
-                    </label>
-                    @endforeach
-                @endif
-            </div>
+        <!-- Numeração -->
+    <div>
+        <p class="text-[#D9C549] font-semibold pl-7 pt-9">Numeração</p>
+        <div class="flex items-center pl-7 pt-3" id="num-selector">
+            @if($selectedColor)
+                @foreach ($selectedColor['numeracao'] as $numero)
+                <label class="flex items-center space-x-2 cursor-pointer">
+                    <input type="radio" name="numeracao" value="{{ $numero }}" class="hidden peer numeracao-option">
+                    <span class="w-9 h-8 bg-[#3F3F3F] rounded-md peer-checked:bg-blue-500 peer-checked:border-blue-500 peer-checked:text-white flex items-center justify-center">
+                        <p class="p-2 font-bold text-white">{{ $numero }}</p>
+                    </span>
+                </label>
+                @endforeach
+            @else
+                @foreach ($product->cores[0]['numeracao'] as $numero)
+                <label class="flex items-center space-x-2 cursor-pointer">
+                    <input type="radio" name="numeracao" value="{{ $numero }}" class="hidden peer numeracao-option">
+                    <span class="w-9 h-8 bg-[#3F3F3F] rounded-md peer-checked:bg-blue-500 peer-checked:border-blue-500 peer-checked:text-white flex items-center justify-center">
+                        <p class="p-2 font-bold text-white">{{ $numero }}</p>
+                    </span>
+                </label>
+                @endforeach
+            @endif
         </div>
-
-        
- 
-         <!--Adicionar ao carrinho -->
-         <div class="flex items-center pl-9 pt-16 mb-20">
-           <div class="flex items-center">
-             <form id="add-to-cart-form" action="/carrinho/{{ $product->id }}" method="POST">
+    </div>
+    
+    <!--Adicionar ao carrinho -->
+    <div class="flex items-center pl-9 pt-16 mb-20">
+        <div class="flex items-center">
+            @if(!$carrinho)
+            <form id="add-to-cart-form" action="/carrinho/{{ $product->id }}" method="POST" onsubmit="return validarFormulario()">
                 @csrf
                 <input type="hidden" name="cor" id="fav-selected-cor" value="{{ isset($corSelec) ? $corSelec : '' }}">
-                <input type="hidden" name="numeracao" id="fav-selected-numeracao" value="">
+                <input type="hidden" name="numeracao" id="selectedNumeracaoInput" value="">
                 <button type="submit" class="bg-[#D9C549] font-bold p-3 w-64 rounded-md">Adicionar ao carrinho</button>
-             </form>
-             @if(!$favorito)
-             <form id="add-to-favorites-form" action="/favoritos/{{ $product->id }}" method="POST">
+            </form>
+            @else
+            <button type="submit" class="bg-[#D9C549] font-bold p-3 w-64 rounded-md">Produto adicionado</button>
+            @endif
+            @if(!$favorito)
+            <form id="add-to-favorites-form" action="/favoritos/{{ $product->id }}" method="POST" onsubmit="return validarFormulario()">
                 @csrf
                 <input type="hidden" name="cor" id="fav-selected-cor" value="{{ isset($corSelec) ? $corSelec : '' }}">
                 <input type="hidden" name="numeracao" id="fav-selected-numeracao" value="">
@@ -100,15 +99,14 @@
                 </button>
             </form>
             @else
-                <form action="/remove-coracao/{{$product->id}}" method="GET">
-                    <a class=" rounded-md " href="/remove-coracao/{{$product->id}}"  onclick="event.preventDefault(); this.closest('form').submit(); "><img width="30" class="m-3 " src="{{ asset('img/coracao2.png')}}" alt=""></a>
-                </form>
-             @endif
-          
-           </div>
-         </div>
-    
-
+            <form action="/remove-coracao/{{$product->id}}" method="GET">
+                <a class="rounded-md" href="/remove-coracao/{{$product->id}}" onclick="event.preventDefault(); this.closest('form').submit();">
+                    <img width="30" class="m-3" src="{{ asset('img/coracao2.png')}}" alt="">
+                </a>
+            </form>
+            @endif
+        </div>
+    </div>
 
  
          <!--Descrição do produto -->
@@ -187,7 +185,16 @@
               </div>
           </div>
          </div>
-  
+
+
+          <!-- Alerta personalizado -->
+    <div id="custom-alert" class="hidden flex fixed top-0 left-0 w-full h-full items-center justify-center bg-black bg-opacity-50" aria-modal="true">
+        <div class="bg-[#3F3F3F] bg-opacity-40 p-6 rounded-lg shadow-lg">
+            <p id="alert-message" class="text-white"></p>
+            <button type="button" class="btn-close" aria-label="Close" onclick="closeAlert()"></button>
+        </div>
+    </div>
+    
      </main>
 
 
@@ -237,7 +244,7 @@
 
         colorForms.forEach(function (form) {
             let colorInput = form.querySelector('.color-input');
-            let colorOptionButton = form.querySelector('.color-option');
+            let colorOptionButton = form.querySelector('.numeracao-option');
 
             colorOptionButton.addEventListener('click', function () {
                 let selectedIndex = colorOptionButton.dataset.index;
@@ -245,9 +252,62 @@
             });
         });
 
+    });
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+            const selectedNumeracaoInput = document.getElementById('selectedNumeracaoInput');
+            const favSelectedNumeracaoInput = document.getElementById('fav-selected-numeracao');
+
+            document.querySelectorAll('.numeracao-option').forEach(function (element) {
+                element.addEventListener('click', function () {
+                    selectedNumeracaoInput.value = element.value;
+                    favSelectedNumeracaoInput.value = element.value;
+                    console.log('Numeração selecionada:', element.value); // Para depuração
+                });
+            });
+        });
+</script>
+
+
+<script>
+     function validarFormulario() {
+            const selectedNumeracaoInput = document.getElementById('selectedNumeracaoInput').value;
+            const favSelectedNumeracaoInput = document.getElementById('fav-selected-numeracao').value;
+            const selectedCorInput = document.getElementById('fav-selected-cor').value;
+            
+            if (!selectedNumeracaoInput && !favSelectedNumeracaoInput) {
+                showAlert('Por favor, escolha uma numeração.');
+                return false; // Impede o envio do formulário
+            }
+
+            if (!selectedCorInput) {
+                showAlert('Por favor, escolha uma cor.');
+                return false; // Impede o envio do formulário
+            }
+
+            return true; // Permite o envio do formulário
+        }
+
+        function showAlert(message) {
+            document.getElementById('alert-message').innerText = message;
+            document.getElementById('custom-alert').classList.remove('hidden');
+        }
+
+        function closeAlert() {
+    var alertBox = document.getElementById('custom-alert');
+    alertBox.style.display = 'none';
+}
+
+
+
+    document.addEventListener('DOMContentLoaded', function () {
         document.querySelectorAll('.numeracao-option').forEach(function (element) {
             element.addEventListener('click', function () {
-                selectedNumeracaoInput.value = element.value;
+                const numeracaoValue = this.value;
+                document.getElementById('selectedNumeracaoInput').value = numeracaoValue;
+                document.getElementById('fav-selected-numeracao').value = numeracaoValue;
+                console.log('Numeração selecionada:', numeracaoValue); // Para depuração
             });
         });
     });

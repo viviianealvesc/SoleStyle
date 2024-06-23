@@ -61,18 +61,32 @@ class ProductController extends Controller
             }
         }
 
+
+        $carrinho = false;
+
+        if($user) {
+            $usercart = $user->carrinho->toArray();
+
+            foreach($usercart as $usercarts) {
+                if($usercarts['id'] == $id) {
+                    $carrinho = true;
+                }
+            }
+        }
+
+
         foreach ($product->cores as $index => $cor) {
             if ($selectedColor && $cor['color'] === $selectedColor['color']) {
              
                 $corSelec = $selectedColor['color']; 
 
-                return view('/produto', ['product' => $product, 'selectedColor' => $selectedColor, 'selectedColorIndex' => $selectedColorIndex, 'corSelec' => $corSelec,  'favorito' => $favorito]);
+                return view('/produto', ['product' => $product, 'selectedColor' => $selectedColor, 'selectedColorIndex' => $selectedColorIndex, 'corSelec' => $corSelec,  'favorito' => $favorito , 'carrinho' => $carrinho]);
 
             }
         }
 
   
-        return view('/produto', ['product' => $product, 'selectedColor' => $selectedColor, 'selectedColorIndex' => $selectedColorIndex, 'favorito' => $favorito]);
+        return view('/produto', ['product' => $product, 'selectedColor' => $selectedColor, 'selectedColorIndex' => $selectedColorIndex, 'favorito' => $favorito, 'carrinho' => $carrinho]);
     }
 
 

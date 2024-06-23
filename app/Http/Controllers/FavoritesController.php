@@ -24,26 +24,6 @@ class FavoritesController extends Controller
     }
 
 
-
-    public function index($id)
-    {
-        $user = auth()->user();
-
-        $favorito = false;
-
-        if($user) {
-            $userFav = $user->favoritos->toArray();
-
-            foreach($userFav as $userFavs) {
-                if($userFavs['id'] == $id) {
-                    $favorito = true;
-                }
-            }
-        }
-        return view('events.favoritos');
-      
-    }
-
     public function add(Request $request, $id)
     {
         $product = Product::findOrFail($id);
@@ -54,7 +34,7 @@ class FavoritesController extends Controller
         $favorite->user_id = $user->id;
         $favorite->product_id = $id;
         $favorite->cor = $request->input('cor');
-        $favorite->numeracao = 34;
+        $favorite->numeracao = $request->input('numeracao');
         $favorite->save();
 
         $favorito = false;

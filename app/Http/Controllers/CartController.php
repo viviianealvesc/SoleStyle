@@ -12,23 +12,32 @@ class CartController extends Controller
     public function pageCarrinho()
     {
         $user = auth()->user();
-        
+
         $carrinhos = $user->carrinho;
-
+    
         $totalParesTenis = 0;
-
+        $total = 0;
+        $subtotal = 0;
+        $subTotalDesconto = 0;
+    
         foreach ($carrinhos as $item) {
             $totalParesTenis += $item->quantity;
-            $total = $item->product->preco - $item->product->discount ;
+            $subtotal += $item->product->preco * $item->quantity;
+            $subTotalDesconto += $item->product->discount * $item->quantity;
+            $total += ($item->product->preco - $item->product->discount) * $item->quantity;
         }
-        
-
+    
         $desconto = 0;
         if ($totalParesTenis >= 2) {
-            $desconto =  7; 
+            $desconto = $total * 0.07; // 7% de desconto
         }
 
-        return view('/events/carrinho', compact('carrinhos', 'desconto', 'totalParesTenis', 'total'));
+        $totalDesconto = $subTotalDesconto + $desconto;
+    
+        $totalComDesconto = $total - $desconto;
+
+
+        return view('/events/carrinho', ['carrinhos' => $carrinhos, 'desconto' => $desconto, 'totalParesTenis' => $totalParesTenis, 'total' => $totalComDesconto, 'totalDesconto' => $totalDesconto, 'subtotal' => $subtotal]);
     }
 
 
@@ -46,9 +55,10 @@ class CartController extends Controller
         $carrinho->save();
 
         $carrinho = false;
-       
 
-        return redirect()->route('cart.pageCarrinho', ['carrinho' => $carrinho])->with('msg', 'Produto adicionado ao carrinho!');
+
+        return redirect()->back()->with('msg', 'Produto adicionado ao carrinho!');
+
     }
 
 
@@ -69,20 +79,17 @@ class CartController extends Controller
 
         $carrinho->save();
         
-
-       
-
         return redirect()->back();
     }
     
 
     public function remove($id)
     {
-        Product::findOrFail($id);
-
         $user = auth()->user();
 
-        $user->carrinho()->detach($id);
+        $item = $user->carrinho()->where('id', $id)->first();
+
+        $item->delete();
 
         return redirect()->back()->with('msg', 'Produto excluido!');
     }
