@@ -33,6 +33,9 @@ Route::match(['get', 'post'],'/events/carrinho/{id}', [CartController::class, 'a
 Route::post('/carrinho/{id}', [CartController::class, 'add'])->name('cart.add')->middleware('auth');
 Route::get('/removeCart/{id}', [CartController::class, 'remove'])->name('cart.remove')->middleware('auth');
 Route::post('/update', [CartController::class, 'update'])->name('cart.update')->middleware('auth');
+Route::match(['get', 'post'],'/fechar', function() {
+    return redirect()->route('finalizarPedido');
+});
 
 
 /******* Navegue por marcas *******/
@@ -68,8 +71,6 @@ Route::get('/pedido/{id}', [ProductController::class, 'cancelarPedido'])->name('
 
 Route::match(['get', 'post'],'/payment/success', [SubscribeController::class, 'success'])->name('payment.success');
 Route::get('/payment/cancel', [SubscribeController::class, 'cancel'])->name('payment.cancel');
-
-
 
 
 

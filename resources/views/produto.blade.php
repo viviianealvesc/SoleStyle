@@ -191,7 +191,6 @@
     <div id="custom-alert" class="hidden flex fixed top-0 left-0 w-full h-full items-center justify-center bg-black bg-opacity-50" aria-modal="true">
         <div class="bg-[#3F3F3F] bg-opacity-40 p-6 rounded-lg shadow-lg">
             <p id="alert-message" class="text-white"></p>
-            <button type="button" class="btn-close" aria-label="Close" onclick="closeAlert()"></button>
         </div>
     </div>
     
@@ -291,13 +290,19 @@
 
         function showAlert(message) {
             document.getElementById('alert-message').innerText = message;
-            document.getElementById('custom-alert').classList.remove('hidden');
-        }
+            const alertBox = document.getElementById('custom-alert');
+            alertBox.classList.remove('hidden');
 
-        function closeAlert() {
-    var alertBox = document.getElementById('custom-alert');
-    alertBox.style.display = 'none';
-}
+        // Oculta o alerta após 2 segundos (2000 milissegundos)
+        setTimeout(function() {
+            alertBox.classList.add('hidden');
+        }, 2000);
+    }
+
+    function closeAlert() {
+        const alertBox = document.getElementById('custom-alert');
+        alertBox.classList.add('hidden');
+    }
 
 
 

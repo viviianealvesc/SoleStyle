@@ -16,11 +16,7 @@ class FavoritesController extends Controller
         
         $favoritos = $user->favoritos;
 
-        $cor = $user->favoritos()->withPivot('cor', 'numeracao')->get();
-
-        Session::put('cor', $cor);
-
-        return view('/events/favoritos', ['favoritos' => $favoritos, 'user' => $user, 'cor' => $cor]);
+        return view('/events/favoritos', ['favoritos' => $favoritos, 'user' => $user]);
     }
 
 
@@ -33,13 +29,9 @@ class FavoritesController extends Controller
         $favorite = new Favorito();
         $favorite->user_id = $user->id;
         $favorite->product_id = $id;
-        $favorite->cor = $request->input('cor');
-        $favorite->numeracao = $request->input('numeracao');
         $favorite->save();
 
         $favorito = false;
-
-       
 
         return redirect()->route('product.product', ['id' => $id, 'favorito' => $favorito])->with('msg', 'Produto adicionado!'); 
     }

@@ -68,7 +68,7 @@
     </div>
     <p class="text-center pt-2 text-white">Viviane Alves</p>
 
-    <div class="p-4 mt-[60px] bg-[#3F3F3F] sm:rounded-lg max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+    <div class="p-4 mt-[60px] bg-[#3F3F3F] rounded-lg max-w-7xl sm:px-6 lg:px-8 space-y-6 mx-[35px]">
         <div class="max-w-xl custom-container">
             <h2 class="mb-3 font-semibold">Estrelas ganhas por compra</h2>
             <div class="inline-block items-center">
@@ -102,18 +102,20 @@
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
+            @if(isset($user->cupons))
             <div class="p-4 sm:p-8 bg-[#3F3F3F] dark:bg-gray-800 shadow sm:rounded-lg">
                 <div class="max-w-xl custom-container" >
-                        <!-- Exibindo cupons -->
+                    <!-- Exibindo cupons -->
                 <h2 class="mb-3 font-semibold">Seus Cupons</h2>
-                @foreach ($user->cupons as $coupon)
-                    <div class="mb-2">
-                        <p> <span class="font-semibold">{{ $coupon->code }} </span>- {{ $coupon->discount }}% de desconto </p>
-                        <span class="text-[#a9a8a8]">Expira em: {{ \Carbon\Carbon::parse($coupon->expiry_date)->format("d/m") }}</span>
-                    </div>
-                @endforeach
+                    @foreach ($user->cupons as $coupon)
+                        <div class="mb-2">
+                            <p> <span class="font-semibold">{{ $coupon->code }} </span>- {{ $coupon->discount }}% de desconto </p>
+                            <span class="text-[#a9a8a8]">Expira em: {{ \Carbon\Carbon::parse($coupon->expiry_date)->format("d/m") }}</span>
+                        </div>
+                    @endforeach
                 </div>
             </div>
+            @endif
 
             <div class="p-4 sm:p-8 bg-[#3F3F3F] dark:bg-gray-800 shadow sm:rounded-lg">
                 <div class="max-w-xl custom-container" >

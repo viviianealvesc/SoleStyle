@@ -1,9 +1,26 @@
-@extends('layouts.menu')
-@section('title', 'SoleStyle')
-@section('content')
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@yield('title')</title>
+    <link class="rounded-full" rel="icon" href="{{ asset('img/logo.png') }}" type="image/x-icon">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <script src="https://js.stripe.com/v3/"></script>
 
 
-<div class="flex justify-center items-center w-full mt-10">
+</head>
+<body class="bg-[#181818] m-3">
+    <div class="flex">
+        <a href="/fechar">
+            <img class="mx-3 pt-2 w-[30px] rounded-full" src="{{asset('/img/desfazer.png')}}" alt="">
+        </a>
+        <p class="font-semibold pt-2 text-white">Cadastrar Endereço</p>
+    </div>
+<div class="flex justify-center items-center w-full mt-3 ">
     <div class="flex justify-end">
         @if(session('msg'))
         <div class="alert border border-success alert-warning alert-dismissible fade show bg-[#3F3F3F] w-72 h-14 mr-2" role="alert">
@@ -12,34 +29,34 @@
         </div>
        @endif
     </div>
-    <form class="max-w-md w-full" action="{{route('cadastrar.endereco')}}" method="POST">
+    <form class="max-w-md m-3 w-full" action="{{route('cadastrar.endereco')}}" method="POST">
         @csrf
         <div class="mb-4">
-            <input class="text-[#676767] p-2 rounded-sm w-full" type="text" id="nome" name="nome" placeholder="Nome completo">
+            <input class="bg-[#3F3F3F] rounded-md p-2 w-full outline-none focus:outline-amber-300 text-white" type="text" id="nome" name="nome" placeholder="Nome completo" autofocus>
         </div>
         <div class="mb-4">
-            <input class="text-[#676767] p-2 rounded-sm w-full" type="text" id="telefone" name="telefone" placeholder="Telefone">
+            <input class="bg-[#3F3F3F] rounded-md p-2 w-full outline-none focus:outline-amber-300 text-white" type="text" id="telefone" name="telefone" placeholder="Telefone">
         </div>
         <div class="mb-4">
-            <input class="text-[#676767] p-2 rounded-sm w-full" type="text" id="cep" name="cep" placeholder="CEP" onblur="buscarEndereco()">
+            <input class="bg-[#3F3F3F] rounded-md p-2 w-full outline-none focus:outline-amber-300 text-white" type="text" id="cep" name="cep" placeholder="CEP" onblur="buscarEndereco()">
         </div>
         <div class="mb-4">
-            <input class="text-[#676767] p-2 rounded-sm w-full" type="text" id="estado" name="estado" placeholder="Estado" readonly>
+            <input class="bg-[#3F3F3F] rounded-md p-2 w-full outline-none focus:outline-amber-300 text-white" type="text" id="estado" name="estado" placeholder="Estado" readonly>
         </div>
         <div class="mb-4">
-            <input class="text-[#676767] p-2 rounded-sm w-full" type="text" id="cidade" name="cidade" placeholder="Cidade" readonly>
+            <input class="bg-[#3F3F3F] rounded-md p-2 w-full outline-none focus:outline-amber-300 text-white" type="text" id="cidade" name="cidade" placeholder="Cidade" readonly>
         </div>
         <div class="mb-4">
-            <input class="text-[#676767] p-2 rounded-sm w-full" type="text" id="rua" name="rua" placeholder="Rua">
+            <input class="bg-[#3F3F3F] rounded-md p-2 w-full outline-none focus:outline-amber-300 text-white" type="text" id="rua" name="rua" placeholder="Rua">
         </div>
         <div class="mb-4">
-            <input class="text-[#676767] p-2 rounded-sm w-full" type="text" id="bairro" name="bairro" placeholder="bairro">
+            <input class="bg-[#3F3F3F] rounded-md p-2 w-full outline-none focus:outline-amber-300 text-white" type="text" id="bairro" name="bairro" placeholder="bairro">
         </div>
         <div class="mb-4">
-            <input class="text-[#676767] p-2 rounded-sm w-full" type="text" id="numero" name="numero" placeholder="Numero">
+            <input class="bg-[#3F3F3F] p-2 rounded-md w-full outline-none focus:outline-amber-300 text-white" type="text" id="numero" name="numero" placeholder="Numero">
         </div>
 
-        <button class="w-full bg-[#D9C549] p-2 rounded-sm" type="submit">Cadastrar endereço</button>
+        <button class="w-full bg-[#D9C549] p-2 rounded-sm " type="submit">Cadastrar endereço</button>
     </form>
 </div>
 
@@ -71,4 +88,7 @@
     }
 </script>
 
-@endsection
+    
+ </body>
+
+</html>

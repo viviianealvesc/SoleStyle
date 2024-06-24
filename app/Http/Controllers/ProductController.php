@@ -8,6 +8,7 @@ use App\Models\Endereco;
 use App\Models\Payment;
 use App\Models\Product;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -64,15 +65,16 @@ class ProductController extends Controller
 
         $carrinho = false;
 
-        if($user) {
-            $usercart = $user->carrinho->toArray();
+    if ($user) {
+        // Obtém os IDs dos produtos no carrinho do usuário
+        $usercart = $user->carrinho->pluck('id')->toArray();
 
-            foreach($usercart as $usercarts) {
-                if($usercarts['id'] == $id) {
-                    $carrinho = true;
-                }
-            }
+        // Verifica se o produto atual está no carrinho
+        if (in_array($product->id, $usercart)) {
+            $carrinho = true;
         }
+    }
+
 
 
         foreach ($product->cores as $index => $cor) {
@@ -135,16 +137,15 @@ class ProductController extends Controller
         $enderecoUser = $user->endereco; 
 
     
-        return view('events.finalizarPedido', compact( 'total', 'enderecoUser', 'id', 'nome', 'imagem'));
+        return view('events.finalizarPedido', compact( 'total', 'enderecoUser', 'id', 'nome', 'imagem', 'subtotal', 'total', 'desconto'));
     }
     
 
 
     public function cadastrarEndereco() {
-
         return view('events.cadastroEnd');
-
     }
+
 
     public function enviarEndereco(Request $request) {
         $endereco = new Endereco();
@@ -164,10 +165,12 @@ class ProductController extends Controller
         $endereco->user_id = $user->id;
 
         $endereco->save();
-    
+
+
         return view('events.cadastroEnd')->with(['msg' => 'Endereço salvo com sucesso!']);
 
     }
+    
 
     public function cupom(Request $request)
     {
@@ -263,13 +266,21 @@ class ProductController extends Controller
 
         $estrelas = $user->estrela;
 
-        if(count($estrelas) == 2) {
+        if(count($estrelas) == 5) {
              // Concede o cupom de desconto
              $this->concederCupom($user);
 
             foreach ($estrelas as $estrela) {
                 $estrela->delete();
             }
+        }
+
+        $currentDate = Carbon::now()->startOfDay();
+
+        $cupons = Cupom::whereDate('expiry_date', $currentDate)->get();
+        
+        foreach($cupons as $cupom) {
+            $cupom->delete();
         }
 
 

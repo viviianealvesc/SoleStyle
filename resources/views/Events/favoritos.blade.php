@@ -40,9 +40,6 @@
                      <p class="text-white truncate w-[largura] mt-2">{{ $favorito->nome }}</p>
                      <p class="text-[#D9C549] font-semibold">R$ {{ $favorito->preco }}</p>
                      <small class="text-[#7E7E7E] line-through">74,90</small>
-                        @foreach ($cor as $cores)
-                          <p class="text-[#D9C549]">{{$cores->pivot->cor}}</p>
-                        @endforeach
                  </div>
 
                  

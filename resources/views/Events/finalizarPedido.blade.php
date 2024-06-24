@@ -31,14 +31,14 @@
                   <!-- Valor total -->
                 <div class="flex justify-between m-2">
                     <p class="text-[#7E7E7E]">Subtotal</p>
-                    <p class="text-[#7E7E7E]">R$ {{ session('subtotal') }}</p>
+                    <p class="text-[#7E7E7E]">R$ {{ $subtotal }}</p>
                 </div>
                 <hr class="border-[#676767] my-2 m-2">
 
                 @if(session('desconto') > 0)
                 <div class="flex justify-between m-2">
                     <p class="text-[#7E7E7E]">Descontos</p>
-                    <p class="text-[#7E7E7E] flex justify-end">- R$ {{ session('desconto') }}</p>
+                    <p class="text-[#7E7E7E] flex justify-end">- R$ {{ $desconto }}</p>
 
                 </div>
                 <hr class="border-[#676767] my-2 m-2">
@@ -46,7 +46,7 @@
 
                 <div class="flex justify-between m-2">
                     <p class="text-white font-semibold">Total</p>
-                    <p class="text-white font-semibold">R$ {{ session('total') }}</p>
+                    <p class="text-white font-semibold">R$ {{ $total }}</p>
                 </div>
             </div>
           </div>
@@ -60,12 +60,12 @@
             @csrf
             <input type="hidden" name="id" value="{{$id}}">
             <input type="hidden" name="nome" value="{{$nome}}">
-            <input type="hidden" name="preco" value="{{ session('quantidade', 0) * $total }}">
+            <input type="hidden" name="preco" value="{{ $total }}">
             <input type="hidden" name="imagem" value="{{$imagem}}">
 
             <div class="mb-5 mt-5">
               <label for="cupom" class="text-[#D9C549]">Cupom de Desconto:</label>
-              <input type="text" id="cupom" name="cupom">
+              <input type="text" class="bg-[#3F3F3F] rounded-md p-2 text-white outline-none focus:outline-amber-300" id="cupom" name="cupom">
             </div>
         
             <button type="submit" class="p-2 rounded-md w-full bg-[#D9C549]">Finalizar pedido</button>

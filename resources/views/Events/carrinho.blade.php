@@ -120,9 +120,9 @@
            <input type="hidden" name="cor" value="{{$carrinho->cor}}">
            <input type="hidden" name="numeracao" value="{{$carrinho->numeracao}}">
            @endif
-           <input type="hidden" name="subtotal" value="{{ number_format($carrinho->product->preco * $carrinho->quantity, 2, ',', '.') }}">
-           <input type="hidden" name="desconto" value="{{ number_format($carrinho->product->discount, 2, ',', '.') }}"/>
-           <input type="hidden" name="total" value="{{ ($carrinho->product->preco -  $carrinho->product->discount) * $carrinho->quantity }}">
+           <input type="hidden" name="subtotal" value="{{ $carrinho->product->preco * $carrinho->quantity }}">
+           <input type="hidden" name="desconto" value="{{ $totalDesconto }}"/>
+           <input type="hidden" name="total" value="{{ $total }}">
 
             <button class="p-2 rounded-md w-full bg-[#D9C549]" href="{{route('finalizarPedido')}}">Continuar</button>
         </form>

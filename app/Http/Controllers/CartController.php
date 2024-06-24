@@ -14,6 +14,7 @@ class CartController extends Controller
         $user = auth()->user();
 
         $carrinhos = $user->carrinho;
+        
     
         $totalParesTenis = 0;
         $total = 0;
@@ -47,17 +48,28 @@ class CartController extends Controller
 
         $user = auth()->user();
 
-        $carrinho = new Carrinho();
-        $carrinho->user_id = $user->id;
-        $carrinho->product_id = $id;
-        $carrinho->cor = $request->input('cor');
-        $carrinho->numeracao = $request->input('numeracao');
-        $carrinho->save();
+        $carrinhoItem = Carrinho::where('user_id', $user->id)
+        ->where('product_id', $id)
+        ->where('cor', $request->input('cor'))
+        ->where('numeracao', $request->input('numeracao'))
+        ->first();
 
-        $carrinho = false;
+        if ($carrinhoItem) {
+
+            $carrinhoItem->increment('quantity');
+
+        } else {
+            $carrinho = new Carrinho();
+            $carrinho->user_id = $user->id;
+            $carrinho->product_id = $id;
+            $carrinho->cor = $request->input('cor');
+            $carrinho->numeracao = $request->input('numeracao');
+            $carrinho->save();
+
+        }
 
 
-        return redirect()->back()->with('msg', 'Produto adicionado ao carrinho!');
+        return redirect()->route('product.product', ['id' => $id])->with('msg', 'Produto adicionado!'); 
 
     }
 

@@ -11,6 +11,7 @@
 
     <script src="https://js.stripe.com/v3/"></script>
 
+
 </head>
 
 <body class="bg-[#181818]">
@@ -25,7 +26,7 @@
         </nav>
         <form action="{{ route('home') }}" method="GET">
         <div class="flex items-center justify-center pb-3">
-          <input class="rounded-lg p-2 bg-[#3F3F3F]" type="text" id="search" name="search" placeholder="O que você procura?">
+          <input class="rounded-lg p-2 bg-[#3F3F3F] text-[0.90rem] w-52 " type="text" id="search" name="search" placeholder="O que você procura?">
           <button type="submit"><img class="bg-[#3F3F3F] rounded-md ml-2 p-1" width="40" src="{{ asset('img/lupa (1).png') }}" alt=""></button>
         </div>
       </form>
@@ -89,7 +90,7 @@
             <div class="flex h-full flex-col overflow-y-scroll bg-[#181818] py-6 shadow-xl">
               <div class=" flex justify-between px-4 sm:px-6">
                 <h2 class="text-base font-bold leading-6 text-white" id="slide-over-title">Menu</h2>
-                <button type="button" class="btn-close" aria-label="Close" onclick="closeAlert()">x</button>
+                <button type="button" class="btn-close bg-white" aria-label="Close" onclick="closeAlert()"></button>
               </div>
               
               <div class="relative mt-6 px-4 sm:px-6">
@@ -105,7 +106,7 @@
                   <div class="flex items-center gap-3">
 
                     @if(empty($avatar))
-                     <p class="flex items-center justify-center w-11 h-10 rounded-full bg-[#828282] text-white">{{ substr($nomeUser, 0, 1) }}</p>
+                     <p class="flex items-center justify-center w-16 h-10 rounded-full bg-[#828282] text-white">{{ substr($nomeUser, 0, 1) }}</p>
                     @else
                       <img class="w-10 rounded-full" src="{{ $avatar }}" alt="">
                     @endif
