@@ -45,4 +45,9 @@ class Product extends Model
     {
         return $this->hasMany(Payment::class);
     }
+
+    public function categorie()
+    {
+        return $this->belongsTo(Categorie::class);
+    }
 }

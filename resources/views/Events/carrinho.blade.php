@@ -113,18 +113,19 @@
     <!-- Botão finalizar pedido -->
     <div class="m-3 mt-7">
 
-        <form action="{{route('finalizarPedido')}}">
+        <form action="{{route('finalizarPedido')}}" method="post">
             @csrf
+            @method('GET')
 
            @if(isset($cores))
            <input type="hidden" name="cor" value="{{$carrinho->cor}}">
            <input type="hidden" name="numeracao" value="{{$carrinho->numeracao}}">
            @endif
-           <input type="hidden" name="subtotal" value="{{ $carrinho->product->preco * $carrinho->quantity }}">
+           <input type="hidden" name="subtotal" value="{{ $subtotal }}">
            <input type="hidden" name="desconto" value="{{ $totalDesconto }}"/>
            <input type="hidden" name="total" value="{{ $total }}">
 
-            <button class="p-2 rounded-md w-full bg-[#D9C549]" href="{{route('finalizarPedido')}}">Continuar</button>
+        <button class="p-2 rounded-md w-full bg-[#D9C549]" href="{{route('finalizarPedido')}}">Continuar</button>
         </form>
     
     </div>

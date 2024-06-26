@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Carrinho;
 use App\Models\Endereco;
 use App\Models\Estrela;
 use App\Models\Payment;
@@ -14,121 +15,110 @@ use Illuminate\Support\Facades\Session as LaravelSession;
 
 class SubscribeController extends Controller
 {
-   public function __invoke(Request $request)
-   {
-      Stripe::setApiKey(config('stripe.test.sk'));
-
-     $user = auth()->user();
-
-     $produto = $user->carrinho;
-
-     foreach($produto as $prod) {
-        $avatar = $prod->product->imagem;
-        $nome = $prod->product->nome;
-     }
-
-      $price =  LaravelSession::get('total');
-
-      $imagem_url = asset('img/loja/' . $avatar);
-
-      $discounts = [];
-      $totalDiscount = 0;
-      $cupomCode = $request->input('cupom');
-      if (!empty($cupomCode)) {
-          try {
-              // Pesquisar o código promocional usando o código fornecido
-              $promotionCodes = PromotionCode::all(['code' => $cupomCode]);
-              if (count($promotionCodes->data) > 0) {
-                  $promotionCode = $promotionCodes->data[0];
-                  $discounts[] = ['promotion_code' => $promotionCode->id];
-                  $totalDiscount += $promotionCode->discount_amount;
-              } else {
-                  return redirect()->back()->withErrors('Esse código promocional não existe ou não é válido.');
-              }
-          } catch (\Exception $e) {
-              return redirect()->back()->withErrors('Esse código promocional não existe ou não é válido.');
-          }
-      }
-
-      $total = $price - $totalDiscount; 
-      $unit_amount = $total * 100;
-
-      session()->put('unit_amount', $unit_amount);
-
-      $session = Session::create([
-         'payment_method_types' => ['card', 'boleto'], 
-         'line_items' => [[
-             'price_data' => [
-                 'currency' => 'brl', 
-                 'product_data' => [
-                     'name' => $nome, 
-                     'images' =>  [$imagem_url],
-                 ],
-                 'unit_amount' => $price * 100, 
-             ],
-             'quantity' => 1, 
-         ]],
-         'discounts' => $discounts,
-         'mode' => 'payment',
-         'success_url' => route('payment.success'), 
-     ]);
-
-
-     LaravelSession::put('session', $session->id);
-     LaravelSession::put('unit_amount', $unit_amount);
-
-     return redirect()->away($session->url);
-   }
-
-
-
-   public function success()
-   {
-
+    public function __invoke(Request $request)
+    {
         Stripe::setApiKey(config('stripe.test.sk'));
-        
+    
         $user = auth()->user();
-
-        $produto = $user->carrinho;
-
-        foreach($produto as $prod) {
-            $idProduct = $prod->product->id;
-            $cor = $prod->cor;
-            $numeracao = $prod->numeracao;
-        }
+        $cartItems = $user->carrinho;
         
-            $price = LaravelSession::get('unit_amount');
+        $subtotal = LaravelSession::get('total', 0); // Valor total inicializado com 0
+        $desconto = (int) LaravelSession::get('desconto');
 
-            $produ = new Product();
-            $user = auth()->user();
-            $id = $produ->user_id = $user->id;
+    
+        $totalFinal = $subtotal;
+        $totalFinalCents = (int) ($totalFinal * 100);
+    
+        // Criar um único item de linha com o total definido
+        $lineItems = [
+            [
+                'price_data' => [
+                    'currency' => 'brl',
+                    'product_data' => [
+                        'name' => 'Total da Compra', // Nome indicando que é o total da compra
+                        'images' => [asset('img/loja/' . $cartItems->first()->product->imagem)], // Usar a imagem do primeiro produto apenas como exemplo
+                    ],
+                    'unit_amount' => $totalFinalCents, // Usar o total final ajustado com desconto
+                ],
+                'quantity' => 1, // Quantidade fixa como 1
+            ]
+        ];
 
-            $userEnd = $user->endereco;
-            $end = new Payment();
-            $idEndereco = $end->endereco_id = $userEnd->id;
+        // Lógica para aplicar desconto se houver cupom
+        $discounts = [];
+        $totalDiscount = 0;
+        $cupomCode = $request->input('cupom');
+        if (!empty($cupomCode)) {
+            try {
+                // Pesquisar o código promocional usando o código fornecido
+                $promotionCodes = PromotionCode::all(['code' => $cupomCode]);
+                if (count($promotionCodes->data) > 0) {
+                    $promotionCode = $promotionCodes->data[0];
+                    $discounts[] = ['promotion_code' => $promotionCode->id];
+                    $totalDiscount += $promotionCode->discount_amount;
+                } else {
+                    return redirect()->back()->withErrors('Esse código promocional não existe ou não é válido.');
+                }
+            } catch (\Exception $e) {
+                return redirect()->back()->withErrors('Esse código promocional não existe ou não é válido.');
+            }
+        }
+  
 
-            $session = LaravelSession::get('session');
+    
+        // Criar a sessão no Stripe
+        $session = Session::create([
+            'payment_method_types' => ['card', 'boleto'],
+            'line_items' => $lineItems,
+            'discounts' => $discounts,
+            'mode' => 'payment',
+            'success_url' => route('payment.success'),
+        ]);
+    
+        // Armazenar o ID da sessão e o total na sessão Laravel
+        LaravelSession::put('session', $session->id);
+    
+        // Redirecionar para o checkout do Stripe
+        return redirect()->away($session->url);
+    }
+    
 
+
+    public function success(Request $request)
+    {
+        Stripe::setApiKey(config('stripe.test.sk'));
+    
+        $session = LaravelSession::get('session');
+        $total = (int) LaravelSession::get('total'); // Convertendo de centavos para reais
+    
+        $user = auth()->user();
+        $cartItems = $user->carrinho;
+    
+        foreach ($cartItems as $item) {
             Payment::create([
-            'stripe_session_id' => $session,
-            'total' => $price,
-            'currency' => 'brl',
-            'status' => 'pendente',
-            'user_id' => $id,
-            'product_id' => $idProduct,
-            'endereco_id' => $idEndereco,
-            'cor' => $cor,
-            'numeracao' => $numeracao,
-        ]);
+                'stripe_session_id' => $session,
+                'total' => $total,
+                'currency' => 'brl',
+                'status' => 'pendente',
+                'user_id' => $user->id,
+                'product_id' => $item->product->id,
+                'endereco_id' => $user->endereco->id,
+                'cor' => $item->cor,
+                'numeracao' => $item->numeracao,
+                'quantity' => $item->quantity,
+            ]);
 
-
-        Estrela::create([
-            'user_id' => $id,
-        ]);
-
-
-       return view('/events/carrinho');
-   }
+            $item->delete();
+        }
+    
+        Estrela::create(['user_id' => $user->id]);
+    
+        // Limpar a sessão Laravel após a conclusão do pagamento
+        LaravelSession::forget(['session', 'total']);
+    
+        return view('events.carrinho');
+    }
+    
 
    public function pedidos()
    {

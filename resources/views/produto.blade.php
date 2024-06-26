@@ -3,7 +3,7 @@
 @section('content')
 
     <main>
-       <div class="pt-10 ml-6 flex items-center justify-between">
+       <div class="pt-6 ml-6 flex items-center justify-between lg:w-1/2 ">
         <a href="{{Route('home')}}"><img width="30" src="{{ asset('img/desfazer.png')}}" alt="Voltar"></a>
 
         @if(session('msg'))
@@ -14,177 +14,165 @@
         @endif
        </div>
  
-         <div class="flex items-center justify-center pt-10">
-             <div class="ml-5">
-                 <div class="flex gap-1 overflow-x-scroll px-1 [&::-webkit-scrollbar]:hidden">
-                    @if($selectedColor)
-                        @foreach ($selectedColor['avatar'] as $imagem)
-                          <img class="w-96 rounded-md m-1" src="/img/loja/{{ $imagem }}" alt="">
+       <div class="container mx-auto px-3 lg:px-0">
+        <div class="flex flex-col lg:flex-row pt-10">
+            <!-- Carrossel de Imagens -->
+            <div id="carouselExampleIndicators" class="carousel slide w-full lg:w-1/2" data-bs-ride="carousel">
+                <!-- Indicadores -->
+                <div class="carousel-indicators">
+                    @if(isset($selectedColor) && isset($selectedColor['avatar']))
+                        @foreach ($selectedColor['avatar'] as $index => $imagem)
+                            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ $index }}" class="{{ $index === 0 ? 'active' : '' }}" aria-current="true" aria-label="Slide {{ $index + 1 }}"></button>
                         @endforeach
                     @else
-                        @foreach ($product->cores[0]['avatar'] as $avatar)
-                          <img class="w-96 rounded-md m-1" src="/img/loja/{{ $avatar }}" alt="">
+                        @foreach ($product->cores[0]['avatar'] as $index => $avatar)
+                            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ $index }}" class="{{ $index === 0 ? 'active' : '' }}" aria-label="Slide {{ $index + 1 }}"></button>
                         @endforeach
                     @endif
                 </div>
-                <p class="text-white pl-2  truncate w-[largura] mt-3 text-2xl">{{ $product->nome}}</p>
-                <div class="flex pl-2 gap-2">
-                    <p class="text-[#D9C549] font-semibold pl-1 text-2xl">{{ $product->preco}}</p>
-                    <small class="text-[#7E7E7E] line-through pt-1">74,90</small>
+                <!-- Itens do Carrossel -->
+                <div class="carousel-inner">
+                    @if(isset($selectedColor) && isset($selectedColor['avatar']))
+                        @foreach ($selectedColor['avatar'] as $index => $imagem)
+                            <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                                <img src="/img/loja/{{ $imagem }}" class="d-block w-100" alt="Imagem do produto">
+                            </div>
+                        @endforeach
+                    @else
+                        @foreach ($product->cores[0]['avatar'] as $index => $avatar)
+                            <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                                <img src="/img/loja/{{ $avatar }}" class="d-block w-100" alt="Imagem do produto">
+                            </div>
+                        @endforeach
+                    @endif
                 </div>
-              
-                <div>
-                    <h2 class="text-[#D9C549] font-semibold pt-9">Cores</h2>
-                    <div class="flex" id="color-selector">
-                        @foreach ($product->cores as $index => $cor)
-                            <form action="/produto/{{$product->id . '/' . $index }}" method="GET" class="inline ">
-                                <input type="hidden" name="cor" value="{{ $cor['color'] }}">
-                                <button type="submit" class="w-20 rounded-md m-1 p-0 border-none bg-none color-option">
-                                    <img class="w-20 rounded-md m-1 color-option-img" src="/img/loja/{{ $cor['avatar'][0] }}" data-index="{{ $index }}" alt="Cor {{ $cor['color'] }}">
+                <!-- Controles do Carrossel -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Próximo</span>
+                </button>
+            </div>
+    
+            <!-- Informações do Produto -->
+            <div class="flex flex-col lg:ml-10 lg:w-1/2">
+                <p class="text-white pl-2 mt-3 text-sm lg:text-3xl">{{ $product->nome }}</p>
+                <div class="flex pl-2 gap-2">
+                    <p class="text-[#D9C549] font-semibold text-xl lg:text-2xl">{{ $product->preco }}</p>
+                    <small class="text-[#7E7E7E] line-through">{{ $product->preco_antigo }}</small>
+                </div>
+    
+                <!-- Cores -->
+                <h2 class="text-[#D9C549] font-semibold pt-9">Cores</h2>
+                <div class="flex flex-wrap" id="color-selector">
+                    @foreach ($product->cores as $index => $cor)
+                        <form action="/produto/{{ $product->id . '/' . $index }}" method="GET" class="inline">
+                            <input type="hidden" name="cor" value="{{ $cor['color'] }}">
+                            <button type="submit" class="w-12 h-12 rounded-full overflow-hidden m-1 p-0 border-none bg-none color-option">
+                                <img class="w-12 h-12 object-cover" src="/img/loja/{{ $cor['avatar'][0] }}" data-index="{{ $index }}" alt="Cor {{ $cor['color'] }}">
+                            </button>
+                        </form>
+                    @endforeach
+                </div>
+    
+                <!-- Numeração -->
+                <div class="mt-6">
+                    <p class="text-[#D9C549] font-semibold">Numeração</p>
+                    <div class="flex flex-wrap items-center pt-3" id="num-selector">
+                        @if($selectedColor)
+                            @foreach ($selectedColor['numeracao'] as $numero)
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="radio" name="numeracao" value="{{ $numero }}" class="hidden peer numeracao-option">
+                                    <span class="w-9 h-8 bg-[#3F3F3F] rounded-md peer-checked:bg-blue-500 peer-checked:border-blue-500 peer-checked:text-white flex items-center justify-center">
+                                        <p class="p-2 font-bold text-white">{{ $numero }}</p>
+                                    </span>
+                                </label>
+                            @endforeach
+                        @else
+                            @foreach ($product->cores[0]['numeracao'] as $numero)
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="radio" name="numeracao" value="{{ $numero }}" class="hidden peer numeracao-option">
+                                    <span class="w-9 h-8 bg-[#3F3F3F] rounded-md peer-checked:bg-blue-500 peer-checked:border-blue-500 peer-checked:text-white flex items-center justify-center">
+                                        <p class="p-2 font-bold text-white">{{ $numero }}</p>
+                                    </span>
+                                </label>
+                            @endforeach
+                        @endif
+                    </div>
+                </div>
+    
+                <!-- Botões Adicionar ao Carrinho e Favoritos -->
+                <div class="flex items-center mt-6">
+                    <div class="flex items-center">
+                        @if(!$carrinho)
+                            <form id="add-to-cart-form" action="/carrinho/{{ $product->id }}" method="POST" onsubmit="return validarFormulario()">
+                                @csrf
+                                <input type="hidden" name="cor" id="fav-selected-cor" value="{{ isset($corSelec) ? $corSelec : '' }}">
+                                <input type="hidden" name="numeracao" id="selectedNumeracaoInput" value="">
+                                <button type="submit" class="bg-[#D9C549] font-bold p-3 text-sm rounded-md">Adicionar ao carrinho</button>
+                            </form>
+                        @else
+                            <button type="submit" class="bg-[#D9C549] font-bold p-3 rounded-md">Produto adicionado</button>
+                        @endif
+                        @if(!$favorito)
+                            <form action="/favoritos/{{ $product->id }}" method="POST">
+                                @csrf
+                                <button type="submit" class="rounded-md">
+                                    <img width="30" class="m-3" src="{{ asset('img/coracao.png') }}" alt="">
                                 </button>
                             </form>
-                        @endforeach
+                        @else
+                            <form action="/remove-coracao/{{$product->id}}" method="GET">
+                                <a class="rounded-md" href="/remove-coracao/{{$product->id}}" onclick="event.preventDefault(); this.closest('form').submit();">
+                                    <img width="30" class="m-3" src="{{ asset('img/coracao2.png')}}" alt="">
+                                </a>
+                            </form>
+                        @endif
                     </div>
-               </div>
-           </div>
-         </div>
-        </div>
- 
-        <!-- Numeração -->
-    <div>
-        <p class="text-[#D9C549] font-semibold pl-7 pt-9">Numeração</p>
-        <div class="flex items-center pl-7 pt-3" id="num-selector">
-            @if($selectedColor)
-                @foreach ($selectedColor['numeracao'] as $numero)
-                <label class="flex items-center space-x-2 cursor-pointer">
-                    <input type="radio" name="numeracao" value="{{ $numero }}" class="hidden peer numeracao-option">
-                    <span class="w-9 h-8 bg-[#3F3F3F] rounded-md peer-checked:bg-blue-500 peer-checked:border-blue-500 peer-checked:text-white flex items-center justify-center">
-                        <p class="p-2 font-bold text-white">{{ $numero }}</p>
-                    </span>
-                </label>
-                @endforeach
-            @else
-                @foreach ($product->cores[0]['numeracao'] as $numero)
-                <label class="flex items-center space-x-2 cursor-pointer">
-                    <input type="radio" name="numeracao" value="{{ $numero }}" class="hidden peer numeracao-option">
-                    <span class="w-9 h-8 bg-[#3F3F3F] rounded-md peer-checked:bg-blue-500 peer-checked:border-blue-500 peer-checked:text-white flex items-center justify-center">
-                        <p class="p-2 font-bold text-white">{{ $numero }}</p>
-                    </span>
-                </label>
-                @endforeach
-            @endif
+                </div>
+            </div>
         </div>
     </div>
     
-    <!--Adicionar ao carrinho -->
-    <div class="flex items-center pl-9 pt-16 mb-20">
-        <div class="flex items-center">
-            @if(!$carrinho)
-            <form id="add-to-cart-form" action="/carrinho/{{ $product->id }}" method="POST" onsubmit="return validarFormulario()">
-                @csrf
-                <input type="hidden" name="cor" id="fav-selected-cor" value="{{ isset($corSelec) ? $corSelec : '' }}">
-                <input type="hidden" name="numeracao" id="selectedNumeracaoInput" value="">
-                <button type="submit" class="bg-[#D9C549] font-bold p-3 w-64 rounded-md">Adicionar ao carrinho</button>
-            </form>
-            @else
-            <button type="submit" class="bg-[#D9C549] font-bold p-3 w-64 rounded-md">Produto adicionado</button>
-            @endif
-            @if(!$favorito)
-            <form id="add-to-favorites-form" action="/favoritos/{{ $product->id }}" method="POST" onsubmit="return validarFormulario()">
-                @csrf
-                <input type="hidden" name="cor" id="fav-selected-cor" value="{{ isset($corSelec) ? $corSelec : '' }}">
-                <input type="hidden" name="numeracao" id="fav-selected-numeracao" value="">
-                <button type="submit" class="rounded-md">
-                    <img width="30" class="m-3" src="{{ asset('img/coracao.png') }}" alt="">
-                </button>
-            </form>
-            @else
-            <form action="/remove-coracao/{{$product->id}}" method="GET">
-                <a class="rounded-md" href="/remove-coracao/{{$product->id}}" onclick="event.preventDefault(); this.closest('form').submit();">
-                    <img width="30" class="m-3" src="{{ asset('img/coracao2.png')}}" alt="">
-                </a>
-            </form>
-            @endif
-        </div>
-    </div>
+    
+    
+    
 
  
          <!--Descrição do produto -->
-         <div class="text-justify m-5">
+         <div class="text-justify mt-5 mx-2">
              <h1 class="text-white font-bold">Descrição</h1>
              <p class="text-[#878686] mt-3">{{$product->descricao}}</p>
          </div>
+
  
          <!--Produtos -->
          <div class="pt-7 pb-10">
-         <small class="text-white p-1 m-2 border-l-2 border-[#D9C549] font-semibold">MAIS VENDIDOS</small>
-         <div class="flex gap-1 overflow-x-scroll px-1 [&::-webkit-scrollbar]:hidden">
-          <div class="p-4">
-              <div class="bg-[#3F3F3F] rounded-lg w-40">
-                  <a href="produto.html"> <img src="img/image-removebg-preview.png" alt=""></a>
-              </div>
-              <p class="text-white truncate w-[largura] mt-2 pl-1">Tênis feminino ultra</p>
-              <div class="flex text-center gap-2">
-                  <p class="text-[#D9C549] font-semibold pl-1">R$ 60,90</p>
-                  <small class="text-[#7E7E7E] line-through">74,90</small>
-              </div>
-          </div>
-  
-          <div class="p-4">
-              <div class="bg-[#3F3F3F] rounded-lg w-40">
-                  <img src="img/image-removebg-preview.png" alt="">
-              </div>
-              <p class="text-white truncate w-[largura] mt-2 pl-1">Tênis feminino ultra</p>
-              <div class="flex text-center gap-2 text">
-                  <p class="text-[#D9C549] font-semibold pl-1">R$ 60,90</p>
-                  <small class="text-[#7E7E7E] line-through">74,90</small>
-              </div>
-          </div>
-  
-          <div class="p-4">
-              <div class="bg-[#3F3F3F] rounded-lg w-40">
-                  <img src="img/image-removebg-preview.png" alt="">
-              </div>
-              <p class="text-white truncate w-[largura] mt-2 pl-1">Tênis feminino ultra</p>
-              <div class="flex text-center gap-2 text">
-                  <p class="text-[#D9C549] font-semibold pl-1">R$ 60,90</p>
-                  <small class="text-[#7E7E7E] line-through">74,90</small>
-              </div>
-          </div>
-  
-          <div class="p-4">
-              <div class="bg-[#3F3F3F] rounded-lg w-40">
-                  <img src="img/image-removebg-preview.png" alt="">
-              </div>
-              <p class="text-white truncate w-[largura] mt-2 pl-1">Tênis feminino ultra</p>
-              <div class="flex text-center gap-2 text">
-                  <p class="text-[#D9C549] font-semibold pl-1">R$ 60,90</p>
-                  <small class="text-[#7E7E7E] line-through">74,90</small>
-              </div>
-          </div>
-  
-          <div class="p-4">
-              <div class="bg-[#3F3F3F] rounded-lg w-40">
-                  <img src="img/image-removebg-preview.png" alt="">
-              </div>
-              <p class="text-white truncate w-[largura] mt-2 pl-1">Tênis feminino ultra</p>
-              <div class="flex text-center gap-2 text">
-                  <p class="text-[#D9C549] font-semibold pl-1">R$ 60,90</p>
-                  <small class="text-[#7E7E7E] line-through">74,90</small>
-              </div>
-          </div>
-  
-          <div class="p-4">
-              <div class="bg-[#3F3F3F] rounded-lg w-40">
-                  <img src="img/image-removebg-preview.png" alt="">
-              </div>
-              <p class="text-white truncate w-[largura] mt-2 pl-1">Tênis feminino ultra</p>
-              <div class="flex text-center gap-2 text">
-                  <p class="text-[#D9C549] font-semibold pl-1">R$ 60,90</p>
-                  <small class="text-[#7E7E7E] line-through">74,90</small>
-              </div>
-          </div>
-         </div>
+            <p class="uppercase text-white p-1 m-2 border-l-2 border-[#D9C549] font-semibold text-[0.90rem]">Você também pode gostar</p>
+            @if(isset($todosProd))
+            @foreach ($todosProd as $product)
+            <div class="flex gap-1 overflow-x-scroll px-1 [&::-webkit-scrollbar]:hidden">
+             <div class="p-4">
+               <div class="p-2 rounded-lg w-40">
+                   <a href="/produto/{{ $product->id }}"> <img class="rounded-md" src="/img/loja/{{ $product->imagem }}" alt=""></a>
+               </div>
+               <p class="text-white truncate w-[220px] mt-2 pl-1">{{ $product->nome }}</p>
+                 <div class="flex text-center gap-2">
+                   @if($product->discount == 0.00)
+                      <p class="text-[#D9C549] font-semibold pl-1">{{  number_format($product->preco, 2, ',', '.') }}</p>
+                   @else
+                     <p class="text-[#D9C549] font-semibold pl-1">{{ number_format($product->preco - $product->discount, 2, ',', '.') }}</p>
+                     <small class="text-[#7E7E7E] line-through">{{  number_format($product->preco, 2, ',', '.') }}</small>
+                   @endif
+                 </div>
+             </div>
+     
+            @endforeach
+            @endif
+    
 
 
           <!-- Alerta personalizado -->

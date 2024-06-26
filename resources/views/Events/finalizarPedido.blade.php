@@ -19,8 +19,9 @@
                     <hr class=" border-[#676767] my-2">
                 
                   @endif
-
-                  <a class="text-white" href="{{ route('endereco')}}">Editar ou adicionar um endereço</a>
+        
+                   <a class="text-white" href="{{ route('endereco')}}">Editar ou adicionar um endereço</a>
+               
               </div>
           </div>
       
@@ -31,14 +32,14 @@
                   <!-- Valor total -->
                 <div class="flex justify-between m-2">
                     <p class="text-[#7E7E7E]">Subtotal</p>
-                    <p class="text-[#7E7E7E]">R$ {{ $subtotal }}</p>
+                    <p class="text-[#7E7E7E]">R$ {{ number_format(session('subtotal')  , 2, ',', '.')}}</p>
                 </div>
                 <hr class="border-[#676767] my-2 m-2">
 
                 @if(session('desconto') > 0)
                 <div class="flex justify-between m-2">
                     <p class="text-[#7E7E7E]">Descontos</p>
-                    <p class="text-[#7E7E7E] flex justify-end">- R$ {{ $desconto }}</p>
+                    <p class="text-[#7E7E7E] flex justify-end">- R$ {{ number_format(session('desconto') , 2, ',', '.') }}</p>
 
                 </div>
                 <hr class="border-[#676767] my-2 m-2">
@@ -46,7 +47,7 @@
 
                 <div class="flex justify-between m-2">
                     <p class="text-white font-semibold">Total</p>
-                    <p class="text-white font-semibold">R$ {{ $total }}</p>
+                    <p class="text-white font-semibold">R$ {{ session('total')  }}</p>
                 </div>
             </div>
           </div>

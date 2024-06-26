@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Banner;
+use App\Models\Categorie;
 use App\Models\Cupom;
 use App\Models\Endereco;
 use App\Models\Payment;
@@ -28,11 +29,12 @@ class ProductController extends Controller
             ])->get();
 
         }else {
-            
-            $products = Product::all();
+
+         
+            $categories  = Categorie::with('produtos')->get();
             $banners = Banner::all();
 
-            return view('welcome', ['products' => $products,'banners' => $banners]);
+            return view('welcome', ['categories' => $categories ,'banners' => $banners]);
 
         }
 
@@ -75,38 +77,58 @@ class ProductController extends Controller
         }
     }
 
-
-
         foreach ($product->cores as $index => $cor) {
             if ($selectedColor && $cor['color'] === $selectedColor['color']) {
              
                 $corSelec = $selectedColor['color']; 
 
-                return view('/produto', ['product' => $product, 'selectedColor' => $selectedColor, 'selectedColorIndex' => $selectedColorIndex, 'corSelec' => $corSelec,  'favorito' => $favorito , 'carrinho' => $carrinho]);
+                $todosProd = Product::all();
+
+                return view('/produto', ['product' => $product, 'todosProd' => $todosProd, 'selectedColor' => $selectedColor, 'selectedColorIndex' => $selectedColorIndex, 'corSelec' => $corSelec,  'favorito' => $favorito , 'carrinho' => $carrinho]);
 
             }
         }
 
+        $todosProd = Product::all();
+
+
   
-        return view('/produto', ['product' => $product, 'selectedColor' => $selectedColor, 'selectedColorIndex' => $selectedColorIndex, 'favorito' => $favorito, 'carrinho' => $carrinho]);
+        return view('/produto', ['product' => $product, 'todosProd' => $todosProd, 'selectedColor' => $selectedColor, 'selectedColorIndex' => $selectedColorIndex, 'favorito' => $favorito, 'carrinho' => $carrinho]);
     }
 
 
 
     public function finalizarPedido(Request $request)
     {
-        $cor = $request->input('cor');
-        $numeracao = $request->input('numeracao');
-        $subtotal = $request->input('subtotal');
-        $desconto = $request->input('desconto');
-        $total = $request->input('total');
-        
-        // Armazene as informações na sessão
-        Session::put('cor', $cor);
-        Session::put('numeracao', $numeracao);
-        Session::put('subtotal', $subtotal);
-        Session::put('desconto', $desconto);
-        Session::put('total', $total);
+           // Capturar os parâmetros da URL ou do formulário
+           $cor = $request->input('cor');
+           $numeracao = $request->input('numeracao');
+           $subtotal = $request->input('subtotal', $request->query('subtotal'));
+           $desconto = $request->input('desconto', $request->query('desconto'));
+           $total = $request->input('total', $request->query('total'));
+
+   
+           // Armazenar os parâmetros na sessão, se fornecidos
+           if ($cor) {
+               Session::put('cor', $cor);
+           }
+           if ($numeracao) {
+               Session::put('numeracao', $numeracao);
+           }
+           if ($subtotal) {
+               Session::put('subtotal', $subtotal);
+           }
+           if ($desconto) {
+               Session::put('desconto', $desconto);
+           }
+           if ($total) {
+               Session::put('total', $total);
+           }
+   
+           // Recuperar os valores da sessão
+          session('subtotal');
+          session('desconto');
+          session('total');
 
 
         $user = auth()->user();
@@ -137,12 +159,15 @@ class ProductController extends Controller
         $enderecoUser = $user->endereco; 
 
     
-        return view('events.finalizarPedido', compact( 'total', 'enderecoUser', 'id', 'nome', 'imagem', 'subtotal', 'total', 'desconto'));
+        return view('events.finalizarPedido', compact( 'total', 'enderecoUser', 'id', 'nome', 'imagem'));
     }
     
 
 
-    public function cadastrarEndereco() {
+    public function cadastrarEndereco(Request $request) {
+  
+      
+        
         return view('events.cadastroEnd');
     }
 
