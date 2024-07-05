@@ -76,23 +76,38 @@ class CartController extends Controller
 
 
     public function atualizarQuantidade(Request $request, $id)
-    {
-        $action = $request->input('action');
+{
+    $action = $request->input('action');
+    $cor = $request->input('cor');
 
-        $carrinho = Carrinho::findOrFail($id);
+    $carrinho = Carrinho::findOrFail($id);
+    $produto = $carrinho->product()->first(); // Garante que o relacionamento 'produto' está carregado corretamente
 
-        if ($action === 'increment') {
-            $carrinho->quantity++;
-        } elseif ($action === 'decrement') {
-            if ($carrinho->quantity > 1) {
-                $carrinho->quantity--;
-            }
+
+    // Encontra a variação do produto pela cor especificada
+    $variacao = null;
+    foreach ($produto->cores as $var) {
+        if ($var['color'] === $cor) {
+            $variacao = $var;
+            break;
         }
-
-        $carrinho->save();
-        
-        return redirect()->back();
     }
+
+
+    // Verifica se a ação é incrementar ou decrementar a quantidade
+    if ($action === 'increment' && $carrinho->quantity < $variacao['estoque']) {
+        $carrinho->quantity++;
+    } elseif ($action === 'decrement' && $carrinho->quantity > 1) {
+        $carrinho->quantity--;
+    }
+
+    $carrinho->save();
+    
+    return redirect()->back();
+}
+
+    
+    
     
 
     public function remove($id)

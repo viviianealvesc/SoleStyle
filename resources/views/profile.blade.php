@@ -63,17 +63,29 @@
             <p class="font-semibold pt-2 text-white">Perfil</p>
         </div>
     </div>
-       <div class="relative negative-margin z-20 flex justify-center items-center ">
-        <img class=" w-20 rounded-full" src="{{asset('/img/doida.jpg')}}" alt="">
-    </div>
-    <p class="text-center pt-2 text-white">Viviane Alves</p>
+      
+    @if(empty($user->avatar))
+        <div class="relative negative-margin z-20 flex justify-center items-center ">
+           <p class="flex items-center justify-center w-16 h-16  rounded-full bg-[#828282] text-white">{{ substr($user->name, 0, 1) }}</p>
+        </div>
+        <p class="text-center pt-2 text-white">{{$user->name}}</p>
+   @else
+        <div class="relative negative-margin z-20 flex justify-center items-center ">
+           <img class="w-16 rounded-full" src="{{ $user->avatar }}" alt="">
+        </div>
+        <p class="text-center pt-2 text-white">{{$user->name}}</p>
+   @endif
+
+    @php
+    $totalEstrelas = min(max($estrelas->count(), 0), 5);
+    @endphp
 
     <div class="p-4 mt-[60px] bg-[#3F3F3F] rounded-lg max-w-7xl sm:px-6 lg:px-8 space-y-6 mx-[35px]">
         <div class="max-w-xl custom-container">
             <h2 class="mb-3 font-semibold">Estrelas ganhas por compra</h2>
             <div class="inline-block items-center">
                 @for ($i = 0; $i < 5; $i++)
-                    @if ($i < $estrelas->count())
+                    @if ($i < $totalEstrelas)
                         <!-- Filled Star -->
                         <div class="inline-block items-center">
                             <svg class="w-4 h-4 text-yellow-300 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
@@ -90,19 +102,20 @@
                     @endif
                 @endfor
             </div>
-            @if ($estrelas->count() == 5)
+            @if ($totalEstrelas == 5)
                 <p class="text-green-600">Você atingiu 5 estrelas!</p>
             @else
-                <p class="mt-2">Faltam apenas {{ 5 - $estrelas->count() }} estrelas para você ganhar um cupom de 40% de desconto!</p>
+                <p class="mt-2">Faltam apenas {{ 5 - $totalEstrelas }} estrelas para você ganhar um cupom de 40% de desconto!</p>
             @endif
         </div>
     </div>
+
 
     
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
-            @if(isset($user->cupons))
+            @if(isset($user->cupons) && $user->cupons->count() > 0)
             <div class="p-4 sm:p-8 bg-[#3F3F3F] dark:bg-gray-800 shadow sm:rounded-lg">
                 <div class="max-w-xl custom-container" >
                     <!-- Exibindo cupons -->
@@ -113,6 +126,16 @@
                             <span class="text-[#a9a8a8]">Expira em: {{ \Carbon\Carbon::parse($coupon->expiry_date)->format("d/m") }}</span>
                         </div>
                     @endforeach
+                </div>
+            </div>
+            @else
+            <div class="p-4 sm:p-8 bg-[#3F3F3F] dark:bg-gray-800 shadow sm:rounded-lg">
+                <div class="max-w-xl custom-container" >
+                    <!-- Exibindo cupons -->
+                <h2 class="mb-3 font-semibold">Seus Cupons</h2>
+                    <div class="mb-2">
+                        <p class=" text-white">Ainda não há cupons de desconto</p>
+                    </div>
                 </div>
             </div>
             @endif

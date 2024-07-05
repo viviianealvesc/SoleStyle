@@ -6,6 +6,7 @@ use App\Http\Controllers\MarcasController;
 use App\Http\Controllers\PayController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SubscribeController;
+use App\Http\Controllers\TrackingController;
 use Illuminate\Http\Request;
 use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Support\Facades\Session;
@@ -18,6 +19,7 @@ Route::get('/produto/{id}/{index}', [ProductController::class, 'show'])->name('p
 Route::get('/produto/{id}', [ProductController::class, 'show'])->name('product.product');
 Route::get('/register', [ProductController::class, 'pageRegister'])->name('product.pageLogin');
 Route::get('/login', [ProductController::class, 'pageRegister'])->name('login');
+Route::post('/track', [TrackingController::class, 'track'])->name('frete');
 
 
 /******* Favoritos *******/
@@ -44,14 +46,19 @@ Route::get('/fechar', function() {
 
 /******* Navegue por marcas *******/
 Route::get('/marca/{nome}', [MarcasController::class, 'marca'])->name('marca');
+Route::get('/categoria/{categoria}', [MarcasController::class, 'categoria'])->name('categoria');
 
 
 
 
 /******* Finalizando o pedido *******/
 Route::get('/pedido', [ProductController::class, 'finalizarPedido'])->name('finalizarPedido')->middleware('auth');
+
 Route::get('/pedido/endereco', [ProductController::class, 'cadastrarEndereco'])->name('endereco')->middleware('auth');
+Route::get('/pedido/endereco/editar', [ProductController::class, 'editarEndereco'])->name('editar.endereco')->middleware('auth');
+Route::put('/pedido/endereco/{endereco}', [ProductController::class, 'atualizarEndereco'])->name('atualizar.endereco')->middleware('auth');
 Route::post('/pedido/endereco', [ProductController::class, 'enviarEndereco'])->name('cadastrar.endereco')->middleware('auth');
+
 Route::post('/pedido', [ProductController::class, 'cupom'])->name('cupom')->middleware('auth');
 Route::get('/formaPagamento', [ProductController::class, 'formaPagamento'])->name('formaPagamento')->middleware('auth');
 Route::post('/events/pag', [PayController::class, 'pagarCompra'])->name('pagarCompra'); //pix

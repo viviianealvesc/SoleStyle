@@ -20,15 +20,15 @@
         </a>
         <p class="font-semibold pt-2 text-white">Cadastrar Endereço</p>
     </div>
-<div class="flex justify-center items-center w-full mt-3 ">
     <div class="flex justify-end">
         @if(session('msg'))
-        <div class="alert border border-success alert-warning alert-dismissible fade show bg-[#3F3F3F] w-72 h-14 mr-2" role="alert">
+        <div class="alert border border-success alert-warning alert-dismissible fade show bg-[#3F3F3F] w-80 h-14 mr-2" role="alert">
             <p class="text-white">{{ session('msg') }}</p>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
        @endif
     </div>
+<div class="flex justify-center items-center w-full mt-3 ">
     <form class="max-w-md m-3 w-full" action="{{route('cadastrar.endereco')}}" method="POST">
         @csrf
         <div class="mb-4">

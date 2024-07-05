@@ -3,7 +3,7 @@
 @section('content')
 
     <main>
-       <div class="pt-6 ml-6 flex items-center justify-between lg:w-1/2 ">
+       <div class="pt-6 ml-6 flex items-center justify-between ">
         <a href="{{Route('home')}}"><img width="30" src="{{ asset('img/desfazer.png')}}" alt="Voltar"></a>
 
         @if(session('msg'))
@@ -61,117 +61,155 @@
             <div class="flex flex-col lg:ml-10 lg:w-1/2">
                 <p class="text-white pl-2 mt-3 text-sm lg:text-3xl">{{ $product->nome }}</p>
                 <div class="flex pl-2 gap-2">
-                    <p class="text-[#D9C549] font-semibold text-xl lg:text-2xl">{{ $product->preco }}</p>
-                    <small class="text-[#7E7E7E] line-through">{{ $product->preco_antigo }}</small>
+                    @if($product->discount == 0.00)
+                    <p class="text-[#D9C549] font-semibold md:text-3xl pl-1">{{  number_format($product->preco, 2, ',', '.') }}</p>
+                @else
+                    <p class="text-[#D9C549] font-semibold pl-1 md:text-3xl">{{ number_format($product->preco - $product->discount, 2, ',', '.') }}</p>
+                    <small class="text-[#7E7E7E] line-through md:text-xl">{{  number_format($product->preco, 2, ',', '.') }}</small>
+                @endif
                 </div>
-    
+
+                <div>
+                   
+                       
+                
+                </div>
+                
                 <!-- Cores -->
                 <h2 class="text-[#D9C549] font-semibold pt-9">Cores</h2>
                 <div class="flex flex-wrap" id="color-selector">
                     @foreach ($product->cores as $index => $cor)
+                    @if($cor['estoque'] == 0)
+                        <form action="/produto/{{ $product->id . '/' . $index }}" method="GET" class="inline">
+                            <input type="hidden" name="cor" value="{{ $cor['color'] }}">
+                            <button type="submit" class="w-12 h-12 rounded-full overflow-hidden m-1 p-0 border-none bg-none color-option" disabled>
+                                <img class="w-12 h-12 object-cover opacity-40" src="/img/loja/{{ $cor['avatar'][0] }}" data-index="{{ $index }}" alt="Cor {{ $cor['color'] }}">
+                            </button>
+                        </form>
+                    @else
                         <form action="/produto/{{ $product->id . '/' . $index }}" method="GET" class="inline">
                             <input type="hidden" name="cor" value="{{ $cor['color'] }}">
                             <button type="submit" class="w-12 h-12 rounded-full overflow-hidden m-1 p-0 border-none bg-none color-option">
                                 <img class="w-12 h-12 object-cover" src="/img/loja/{{ $cor['avatar'][0] }}" data-index="{{ $index }}" alt="Cor {{ $cor['color'] }}">
                             </button>
                         </form>
-                    @endforeach
+                    @endif
+                    <h2 class="text-[#D9C549] font-semibold pt-9">{{$cor['estoque']}}</h2>
+                @endforeach
+                
                 </div>
     
-                <!-- Numeração -->
-                <div class="mt-6">
-                    <p class="text-[#D9C549] font-semibold">Numeração</p>
-                    <div class="flex flex-wrap items-center pt-3" id="num-selector">
-                        @if($selectedColor)
-                            @foreach ($selectedColor['numeracao'] as $numero)
-                                <label class="flex items-center space-x-2 cursor-pointer">
-                                    <input type="radio" name="numeracao" value="{{ $numero }}" class="hidden peer numeracao-option">
-                                    <span class="w-9 h-8 bg-[#3F3F3F] rounded-md peer-checked:bg-blue-500 peer-checked:border-blue-500 peer-checked:text-white flex items-center justify-center">
-                                        <p class="p-2 font-bold text-white">{{ $numero }}</p>
-                                    </span>
-                                </label>
-                            @endforeach
-                        @else
-                            @foreach ($product->cores[0]['numeracao'] as $numero)
-                                <label class="flex items-center space-x-2 cursor-pointer">
-                                    <input type="radio" name="numeracao" value="{{ $numero }}" class="hidden peer numeracao-option">
-                                    <span class="w-9 h-8 bg-[#3F3F3F] rounded-md peer-checked:bg-blue-500 peer-checked:border-blue-500 peer-checked:text-white flex items-center justify-center">
-                                        <p class="p-2 font-bold text-white">{{ $numero }}</p>
-                                    </span>
-                                </label>
-                            @endforeach
-                        @endif
-                    </div>
-                </div>
-    
-                <!-- Botões Adicionar ao Carrinho e Favoritos -->
-                <div class="flex items-center mt-6">
-                    <div class="flex items-center">
-                        @if(!$carrinho)
-                            <form id="add-to-cart-form" action="/carrinho/{{ $product->id }}" method="POST" onsubmit="return validarFormulario()">
-                                @csrf
-                                <input type="hidden" name="cor" id="fav-selected-cor" value="{{ isset($corSelec) ? $corSelec : '' }}">
-                                <input type="hidden" name="numeracao" id="selectedNumeracaoInput" value="">
-                                <button type="submit" class="bg-[#D9C549] font-bold p-3 text-sm rounded-md">Adicionar ao carrinho</button>
-                            </form>
-                        @else
-                            <button type="submit" class="bg-[#D9C549] font-bold p-3 rounded-md">Produto adicionado</button>
-                        @endif
-                        @if(!$favorito)
-                            <form action="/favoritos/{{ $product->id }}" method="POST">
-                                @csrf
-                                <button type="submit" class="rounded-md">
-                                    <img width="30" class="m-3" src="{{ asset('img/coracao.png') }}" alt="">
-                                </button>
-                            </form>
-                        @else
-                            <form action="/remove-coracao/{{$product->id}}" method="GET">
-                                <a class="rounded-md" href="/remove-coracao/{{$product->id}}" onclick="event.preventDefault(); this.closest('form').submit();">
-                                    <img width="30" class="m-3" src="{{ asset('img/coracao2.png')}}" alt="">
-                                </a>
-                            </form>
-                        @endif
-                    </div>
-                </div>
+               <!-- Numeração -->
+<div class="mt-6">
+    <p class="text-[#D9C549] font-semibold">Numeração</p>
+    <div class="flex flex-wrap items-center pt-3" id="num-selector">
+        @if($selectedColor)
+            @foreach ($selectedColor['numeracao'] as $numero)
+                <label class="flex items-center space-x-2 cursor-pointer">
+                    <input type="radio" name="numeracao" value="{{ $numero }}" class="hidden peer numeracao-option">
+                    <span class="w-9 h-8 bg-[#3F3F3F] rounded-md peer-checked:bg-blue-500 peer-checked:border-blue-500 peer-checked:text-white flex items-center justify-center">
+                        <p class="p-2 font-bold text-white">{{ $numero }}</p>
+                    </span>
+                </label>
+            @endforeach
+        @else
+            @foreach ($product->cores[0]['numeracao'] as $numero)
+                <label class="flex items-center space-x-2 cursor-pointer">
+                    <input type="radio" name="numeracao" value="{{ $numero }}" class="hidden peer numeracao-option">
+                    <span class="w-9 h-8 bg-[#3F3F3F] rounded-md peer-checked:bg-blue-500 peer-checked:border-blue-500 peer-checked:text-white flex items-center justify-center">
+                        <p class="p-2 font-bold text-white">{{ $numero }}</p>
+                    </span>
+                </label>
+            @endforeach
+        @endif
+    </div>
+</div>
+
+<!-- Botões Adicionar ao Carrinho e Favoritos -->
+<div class="flex items-center mt-6">
+    <div class="flex items-center">
+            <form id="add-to-cart-form" action="/carrinho/{{ $product->id }}" method="POST" onsubmit="return validarFormulario()">
+                @csrf
+                <input type="hidden" name="cor" id="fav-selected-cor" value="{{ isset($corSelec) ? $corSelec : '' }}">
+                <input type="hidden" name="numeracao" id="selectedNumeracaoInput" value="">
+                <button type="submit" class="bg-[#D9C549] font-bold p-3 text-sm rounded-md">Adicionar ao carrinho</button>
+            </form>
+        @if(!$favorito)
+            <form action="/favoritos/{{ $product->id }}" method="POST">
+                @csrf
+                <button type="submit" class="rounded-md">
+                    <img width="30" class="m-3" src="{{ asset('img/coracao.png') }}" alt="">
+                </button>
+            </form>
+        @else
+            <form action="/remove-coracao/{{$product->id}}" method="GET">
+                <a class="rounded-md" href="/remove-coracao/{{$product->id}}" onclick="event.preventDefault(); this.closest('form').submit();">
+                    <img width="30" class="m-3" src="{{ asset('img/coracao2.png')}}" alt="">
+                </a>
+            </form>
+        @endif                          
+    </div>
+</div>
+
+
+            
             </div>
         </div>
     </div>
     
-    
-    
-    
-
  
          <!--Descrição do produto -->
-         <div class="text-justify mt-5 mx-2">
-             <h1 class="text-white font-bold">Descrição</h1>
-             <p class="text-[#878686] mt-3">{{$product->descricao}}</p>
+         <div class="m-4 my-5">
+             <h1 class="text-white flex justify-center font-bold">Descrição</h1>
+             <p class="text-[#878686] mt-3">{{strip_tags($product->descricao)}}</p>
          </div>
 
  
          <!--Produtos -->
-         <div class="pt-7 pb-10">
-            <p class="uppercase text-white p-1 m-2 border-l-2 border-[#D9C549] font-semibold text-[0.90rem]">Você também pode gostar</p>
+         <div class="flex items-center justify-between mr-2 mt-10">
+            <p class="uppercase text-white p-1 m-2 border-l-2 border-[#D9C549] font-semibold text-[0.90rem] max-sm:text-[0.70rem]">Você também pode gostar</p>
+            <a class="text-[#D9C549] text-[0.90rem] max-sm:text-[0.70rem]" href="#">Ver todos ></a>
+        </div>
+        
+        <div class="flex gap-1 mb-5 overflow-x-scroll px-1 [&::-webkit-scrollbar]:hidden">
             @if(isset($todosProd))
             @foreach ($todosProd as $product)
-            <div class="flex gap-1 overflow-x-scroll px-1 [&::-webkit-scrollbar]:hidden">
-             <div class="p-4">
-               <div class="p-2 rounded-lg w-40">
-                   <a href="/produto/{{ $product->id }}"> <img class="rounded-md" src="/img/loja/{{ $product->imagem }}" alt=""></a>
-               </div>
-               <p class="text-white truncate w-[220px] mt-2 pl-1">{{ $product->nome }}</p>
-                 <div class="flex text-center gap-2">
-                   @if($product->discount == 0.00)
-                      <p class="text-[#D9C549] font-semibold pl-1">{{  number_format($product->preco, 2, ',', '.') }}</p>
-                   @else
-                     <p class="text-[#D9C549] font-semibold pl-1">{{ number_format($product->preco - $product->discount, 2, ',', '.') }}</p>
-                     <small class="text-[#7E7E7E] line-through">{{  number_format($product->preco, 2, ',', '.') }}</small>
-                   @endif
-                 </div>
-             </div>
-     
-            @endforeach
-            @endif
+            <div class="p-2">
+                <div class="relative">
+                    <a href="/produto/{{ $product->id }}" class="relative block max-sm:w-32">
+                        <img class="rounded-md max-sm:w-32 w-40" src="/img/loja/{{ $product->imagem }}" alt="">
+                        
+                        @php
+                            $esgotado = false;
+                            foreach ($product->cores as $cor) {
+                                if ($cor['estoque'] <= 0) {
+                                    $esgotado = true;
+                                    break;
+                                }
+                            }
+                        @endphp
+        
+                         @if ($esgotado)
+                            <div class="absolute top-0 right-0 bg-red-600 text-white max-sm:text-[0.80rem] p-1 rounded-md">Esgotado</div>
+                        @elseif ($product->discount > 0)
+                            <img class="absolute top-0 right-0 w-12 p-1 rounded-md" src="{{ asset('/img/oferta-unscreen.gif') }}" alt="Promoção">
+                        @endif
+                    </a>
+                </div>
+              <p class="text-white truncate w-[160px] mt-2 pl-1 max-sm:text-[0.80rem]">{{ $product->nome }}</p>
+                <div class="flex text-center gap-2">
+                    @if($product->discount == 0.00)
+                        <p class="text-[#D9C549] font-semibold pl-1">{{  number_format($product->preco, 2, ',', '.') }}</p>
+                    @else
+                        <p class="text-[#D9C549] font-semibold pl-1">{{ number_format($product->preco - $product->discount, 2, ',', '.') }}</p>
+                        <small class="text-[#7E7E7E] line-through">{{  number_format($product->preco, 2, ',', '.') }}</small>
+                    @endif
+                </div>
+            </div>
+        @endforeach
+        @endif
+       
+        </div>
     
 
 
@@ -258,49 +296,50 @@
 
 
 <script>
-     function validarFormulario() {
-            const selectedNumeracaoInput = document.getElementById('selectedNumeracaoInput').value;
-            const favSelectedNumeracaoInput = document.getElementById('fav-selected-numeracao').value;
-            const selectedCorInput = document.getElementById('fav-selected-cor').value;
-            
-            if (!selectedNumeracaoInput && !favSelectedNumeracaoInput) {
-                showAlert('Por favor, escolha uma numeração.');
-                return false; // Impede o envio do formulário
-            }
+    function validarFormulario() {
+        const selectedNumeracaoInput = document.getElementById('selectedNumeracaoInput').value;
+        const selectedCorInput = document.getElementById('fav-selected-cor').value;
 
-            if (!selectedCorInput) {
-                showAlert('Por favor, escolha uma cor.');
-                return false; // Impede o envio do formulário
-            }
-
-            return true; // Permite o envio do formulário
+        if (!selectedNumeracaoInput) {
+            showAlert('Por favor, escolha uma numeração.');
+            return false;
         }
 
-        function showAlert(message) {
-            document.getElementById('alert-message').innerText = message;
-            const alertBox = document.getElementById('custom-alert');
-            alertBox.classList.remove('hidden');
+        if (!selectedCorInput) {
+            showAlert('Por favor, escolha uma cor.');
+            return false;
+        }
 
-        // Oculta o alerta após 2 segundos (2000 milissegundos)
+        return true;
+    }
+
+    function showAlert(message) {
+        document.getElementById('alert-message').innerText = message;
+        const alertBox = document.getElementById('custom-alert');
+        alertBox.classList.remove('hidden');
+
         setTimeout(function() {
             alertBox.classList.add('hidden');
         }, 2000);
     }
-
-    function closeAlert() {
-        const alertBox = document.getElementById('custom-alert');
-        alertBox.classList.add('hidden');
-    }
-
-
 
     document.addEventListener('DOMContentLoaded', function () {
         document.querySelectorAll('.numeracao-option').forEach(function (element) {
             element.addEventListener('click', function () {
                 const numeracaoValue = this.value;
                 document.getElementById('selectedNumeracaoInput').value = numeracaoValue;
-                document.getElementById('fav-selected-numeracao').value = numeracaoValue;
                 console.log('Numeração selecionada:', numeracaoValue); // Para depuração
+            });
+        });
+
+        document.querySelectorAll('.color-option').forEach(function (element) {
+            element.addEventListener('click', function () {
+                const corValue = this.getAttribute('data-color');
+                const indexValue = this.getAttribute('data-index');
+                document.getElementById('fav-selected-cor').value = corValue;
+                console.log('Cor selecionada:', corValue); // Para depuração
+
+            
             });
         });
     });

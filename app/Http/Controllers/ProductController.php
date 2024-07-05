@@ -11,6 +11,7 @@ use App\Models\Product;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
 class ProductController extends Controller
@@ -37,6 +38,7 @@ class ProductController extends Controller
             return view('welcome', ['categories' => $categories ,'banners' => $banners]);
 
         }
+        
 
        return view('welcome', ['products' => $products, 'search' => $search]);
     }
@@ -77,6 +79,7 @@ class ProductController extends Controller
         }
     }
 
+ 
         foreach ($product->cores as $index => $cor) {
             if ($selectedColor && $cor['color'] === $selectedColor['color']) {
              
@@ -106,6 +109,8 @@ class ProductController extends Controller
            $subtotal = $request->input('subtotal', $request->query('subtotal'));
            $desconto = $request->input('desconto', $request->query('desconto'));
            $total = $request->input('total', $request->query('total'));
+           $quantidade = $request->input('quantidade', $request->query('quantidade'));
+           $id = $request->input('id', $request->query('id'));
 
    
            // Armazenar os parâmetros na sessão, se fornecidos
@@ -125,10 +130,16 @@ class ProductController extends Controller
                Session::put('total', $total);
            }
    
+           Session::put('quantidade', $quantidade);
+           Session::put('id', $id);
+           Session::put('cor', $cor);
            // Recuperar os valores da sessão
           session('subtotal');
           session('desconto');
           session('total');
+          session('cor');
+          session('quantidade');
+          session('id');
 
 
         $user = auth()->user();
@@ -164,11 +175,17 @@ class ProductController extends Controller
     
 
 
-    public function cadastrarEndereco(Request $request) {
-  
-      
+    public function cadastrarEndereco() {
         
         return view('events.cadastroEnd');
+    }
+
+    public function editarEndereco() {
+        $user = auth()->user();
+
+        $enderecos = $user->endereco;
+
+        return view('events.editarEnd', ['enderecos' => $enderecos]);
     }
 
 
@@ -194,6 +211,24 @@ class ProductController extends Controller
 
         return view('events.cadastroEnd')->with(['msg' => 'Endereço salvo com sucesso!']);
 
+    }
+
+    public function atualizarEndereco(Request $request, Endereco $endereco)
+    {
+        $data = $request->validate([
+            'nome' => 'required|string|max:255',
+            'telefone' => 'required|string|max:255',
+            'cep' => 'required|string|max:10',
+            'estado' => 'required|string|max:255',
+            'cidade' => 'required|string|max:255',
+            'rua' => 'required|string|max:255',
+            'bairro' => 'required|string|max:255',
+            'numero' => 'required|string|max:255',
+        ]);
+    
+        $endereco->update($data);
+    
+        return redirect()->route('editar.endereco')->with('msg', 'Endereço atualizado com sucesso!');
     }
     
 
@@ -270,7 +305,9 @@ class ProductController extends Controller
 
         $pedidos = $user->payments;
 
-        return view('events.pedido', ['pedidos' => $pedidos]);
+        $todosProd = Product::all();
+
+        return view('events.pedido', ['pedidos' => $pedidos, 'todosProd' => $todosProd]);
     }
 
 
@@ -279,6 +316,7 @@ class ProductController extends Controller
         $pedido = Payment::findOrFail($id);
 
         $pedido->status = 'cancelado';
+        $pedido->updated_at = Carbon::now();
         $pedido->save();
   
         return redirect()->back();
@@ -291,7 +329,9 @@ class ProductController extends Controller
 
         $estrelas = $user->estrela;
 
-        if(count($estrelas) == 5) {
+        $totalEstrelas = min(max($estrelas->count(), 0), 5);
+
+        if($totalEstrelas == 5) {
              // Concede o cupom de desconto
              $this->concederCupom($user);
 

@@ -9,7 +9,19 @@ class Payment extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['stripe_session_id', 'currency', 'user_id', 'product_id', 'endereco_id', 'cor', 'numeracao', 'total', 'status', 'quantity'];
+    protected $fillable = [
+        'stripe_session_id',
+        'currency',
+        'user_id',
+        'product_id',
+        'endereco_id', 
+        'cor', 
+        'numeracao', 
+        'total', 
+        'status', 
+        'quantity',
+        'tracking_code',
+    ];
 
     public function user()
     {

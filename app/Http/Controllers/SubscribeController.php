@@ -12,12 +12,21 @@ use Illuminate\Http\Request;
 use Stripe\PromotionCode;
 use Stripe\Stripe;
 use Illuminate\Support\Facades\Session as LaravelSession;
+use Escapework\Frete\Correios;
+
+use EscapeWork\Frete\Correios\PrecoPrazo;
+use EscapeWork\Frete\Correios\Data;
+use EscapeWork\Frete\Correios\Rastreamento;
+use EscapeWork\Frete\FreteException;
+use App\Services\RastreamentoService;
+
 
 class SubscribeController extends Controller
 {
     public function __invoke(Request $request)
     {
         Stripe::setApiKey(config('stripe.test.sk'));
+
     
         $user = auth()->user();
         $cartItems = $user->carrinho;
@@ -36,7 +45,6 @@ class SubscribeController extends Controller
                     'currency' => 'brl',
                     'product_data' => [
                         'name' => 'Total da Compra', // Nome indicando que é o total da compra
-                        'images' => [asset('img/loja/' . $cartItems->first()->product->imagem)], // Usar a imagem do primeiro produto apenas como exemplo
                     ],
                     'unit_amount' => $totalFinalCents, // Usar o total final ajustado com desconto
                 ],
@@ -84,7 +92,7 @@ class SubscribeController extends Controller
     
 
 
-    public function success(Request $request)
+    public function success()
     {
         Stripe::setApiKey(config('stripe.test.sk'));
     
@@ -112,12 +120,67 @@ class SubscribeController extends Controller
         }
     
         Estrela::create(['user_id' => $user->id]);
+
+        $id = session('id');
+
+        $productId = $id; 
+        $produto = Product::find($productId);
+
+     
+        $cor =  session('cor');
+        $quantidade = session('quantidade');
+        
+
+        $cores = $produto->cores;
+        
+        foreach ($cores as &$corItem) {
+            if ($corItem['color'] == $cor) {
+                // Subtrai a quantidade do estoque atual
+                $corItem['estoque'] -= $quantidade;
+    
+                // Garantir que o estoque não seja negativo
+                if ($corItem['estoque'] < 0) {
+                    $corItem['estoque'] = 0;
+                }
+               
+                $produto->cores = $cores;
+                $produto->save(); 
+                break; 
+            }
+        }
+
+       
     
         // Limpar a sessão Laravel após a conclusão do pagamento
         LaravelSession::forget(['session', 'total']);
     
         return view('events.carrinho');
     }
+
+    
+    protected $rastreamentoService;
+
+    public function __construct(RastreamentoService $rastreamentoService)
+    {
+        $this->rastreamentoService = $rastreamentoService;
+    }
+   
+    public function frete(Request $request)
+    {
+        $codigo = $request->input('codigo'); // Obtém o código de rastreamento do formulário
+
+        try {
+            // Consulta o rastreamento usando o serviço de rastreamento
+            $resultado = $this->rastreamentoService->consultarRastreamento($codigo);
+
+            return view('events.pedido', ['resultado' => $resultado]);
+        } catch (\Exception $e) {
+            return back()->withErrors(['msg' => 'Houve um erro ao buscar os dados. Verifique se todos os dados estão corretos']);
+        }
+    }
+    
+
+    
     
 
    public function pedidos()

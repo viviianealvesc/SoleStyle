@@ -30,19 +30,23 @@
                 <div class="flex">
                     <img class="w-28 p-2 rounded-lg" src="/img/loja/{{$carrinho->product->imagem}}" alt="{{$carrinho->product->nome}}">
                     <div class="ml-3">
-                        <p class="text-white truncate w-[largura] mt-2">{{$carrinho->product->nome}}</p>
+                        <p class="text-white max-sm:w-[158px] truncate w-[largura] mt-2">{{$carrinho->product->nome}}</p>
 
                         @if($carrinho->product->discount == 0.00)
-                            <div class="flex m-1 mb-2 items-center">
-                                <p class="text-[#D9C549] font-semibold mr-1">{{$carrinho->product->preco}}</p>
-                                <p class="text-[#D9C549] ml-5">{{$carrinho->cor}}, {{$carrinho->numeracao}}</p>
+                            <div class="m-1 mb-2 items-center">
+                                <div class="flex">
+                                    <p class="text-[#D9C549] font-semibold mr-1">{{  number_format($carrinho->product->preco - $carrinho->product->discount, 2, ',', '.') }}</p>
+                                </div>
+                                <p class="text-[#D9C549]">{{$carrinho->cor}}, {{$carrinho->numeracao}}</p>
 
                             </div>
                         @else
-                            <div class="flex m-1 mb-2 items-center">
-                                <p class="text-[#D9C549] font-semibold mr-1">{{  number_format($carrinho->product->preco - $carrinho->product->discount, 2, ',', '.') }}</p>
-                                <small class="text-[#7E7E7E] line-through">{{$carrinho->product->preco}}</small>
-                                <p class="text-[#D9C549] ml-5">{{$carrinho->cor}}, {{$carrinho->numeracao}}</p>
+                            <div class=" m-1 mb-2 items-center">
+                                <div class="flex">
+                                    <p class="text-[#D9C549] font-semibold mr-1">{{  number_format($carrinho->product->preco - $carrinho->product->discount, 2, ',', '.') }}</p>
+                                    <small class="text-[#7E7E7E] line-through">{{$carrinho->product->preco}}</small>
+                                </div>
+                                <p class="text-[#D9C549]">{{$carrinho->cor}}, {{$carrinho->numeracao}}</p>
                             </div>
                         @endif
                  
@@ -64,6 +68,7 @@
                             <form action="/events/carrinho/{{$carrinho->id}}" method="post">
                                 @csrf
                                 <input type="hidden" name="action" value="increment">
+                                <input type="hidden" name="cor" value="{{$carrinho->cor}}">
                                 <button type="submit" class="border p-1 rounded-md w-9" >
                                     <i class="bi bi-caret-right-fill text-white"></i>
                                 </button>
@@ -89,23 +94,22 @@
 
      
 
-           @if($carrinho->product->discount > 0)
-            <div class="flex justify-between mx-2">
-                <p class="text-[#7E7E7E]">Descontos</p>
-                <p class="text-[#7E7E7E] flex justify-end">- R$ {{ number_format($totalDesconto, 2, ',', '.') }}</p>
-            </div>
-            <div class="w-full flex justify-end">
-                @if ($desconto > 0)
-                  <small class="text-green-400">Você ganhou um desconto de 7% por adicionar 2 pares de tênis ao seu carrinho!</small>
+           @if($carrinho->product->discount > 0 || $desconto > 0)
+                <div class="flex justify-between mx-2">
+                    <p class="text-[#7E7E7E]">Descontos</p>
+                    <p class="text-[#7E7E7E] flex justify-end">- R$ {{ number_format($totalDesconto, 2, ',', '.') }}</p>
+                </div>
+                @if($desconto > 0)
+                    <div class="flex justify-end">
+                        <small class="text-green-400">Você ganhou um desconto de 7% por adicionar 2 pares de tênis ao seu carrinho!</small>
+                    </div>
                 @endif
-            </div>
-            <hr class="border-[#676767] my-2 m-2">
+                <hr class="border-[#676767] my-2 m-2">
             @endif
 
             <div class="flex justify-between m-2">
                 <p class="text-white font-semibold">Total</p>
                 <p class="text-white font-semibold">R$ {{ number_format($total , 2, ',', '.') }}</p>
-                
             </div>
         </div>
     </div>
@@ -117,13 +121,15 @@
             @csrf
             @method('GET')
 
-           @if(isset($cores))
+         
            <input type="hidden" name="cor" value="{{$carrinho->cor}}">
            <input type="hidden" name="numeracao" value="{{$carrinho->numeracao}}">
-           @endif
+         
            <input type="hidden" name="subtotal" value="{{ $subtotal }}">
            <input type="hidden" name="desconto" value="{{ $totalDesconto }}"/>
            <input type="hidden" name="total" value="{{ $total }}">
+           <input type="hidden" name="quantidade" value="{{$carrinho->quantity }}">
+           <input type="hidden" name="id" value="{{$carrinho->product->id }}">
 
         <button class="p-2 rounded-md w-full bg-[#D9C549]" href="{{route('finalizarPedido')}}">Continuar</button>
         </form>

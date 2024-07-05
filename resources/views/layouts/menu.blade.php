@@ -11,6 +11,8 @@
 
     <script src="https://js.stripe.com/v3/"></script>
 
+    <script src="https://cdn.tailwindcss.com"></script>
+
 
 </head>
 
@@ -18,16 +20,16 @@
     <header class="shadow-lg bg-[#D9C549]">
         <nav class="flex justify-between pt-4 p-4">
             <div>
-               <a href="{{Route('home')}}"><img width="80" src="{{ asset('img/logo.png') }}" alt=""></a> 
+               <a href="{{Route('home')}}"><img class="w-[80px] max-sm:w-[70px]" src="{{ asset('img/logo.png') }}" alt=""></a> 
             </div>
             <div class="pt-6">
-                <button id="deactivateButton"><img src="{{ asset('img/menu-hamburguer.png') }}" alt="menu-lateral"></button>
+                <button id="deactivateButton"><img class="max-sm:w-[30px]" src="{{ asset('img/menu-hamburguer.png') }}" alt="menu-lateral"></button>
             </div>
         </nav>
         <form action="{{ route('home') }}" method="GET">
         <div class="flex items-center justify-center pb-3">
-          <input class="rounded-lg p-2 bg-[#3F3F3F] text-[0.90rem] w-52 " type="text" id="search" name="search" placeholder="O que você procura?">
-          <button type="submit"><img class="bg-[#3F3F3F] rounded-md ml-2 p-1" width="40" src="{{ asset('img/lupa (1).png') }}" alt=""></button>
+          <input class="rounded-lg p-2 bg-[#3F3F3F] text-[0.90rem] w-52 max-sm:text-[0.70rem] outline-none md:w-96 focus:outline-amber-300 text-white" type="text" id="search" name="search" placeholder="O que você procura?">
+          <button type="submit"><img class="bg-[#3F3F3F] rounded-md ml-2 p-1 w-[40px] max-sm:w-[35px]" src="{{ asset('img/lupa (1).png') }}" alt=""></button>
         </div>
       </form>
     </header>
@@ -39,6 +41,65 @@
     <div id="container"></div>
     
     
+    <footer class="bg-[#d9c649d1] text-white py-8 mt-36">
+      <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+          <!-- Informações de Contato -->
+          <div>
+              <h4 class="font-bold mb-2">Contato</h4>
+              <p>Rua Exemplo, 123</p>
+              <p>Cidade, Estado, CEP</p>
+              <p>Telefone: (XX) XXXX-XXXX</p>
+              <p>Email: suporte@exemplo.com</p>
+          </div>
+          
+          <!-- Links Importantes -->
+          <div>
+              <h4 class="font-bold mb-2">Informações</h4>
+              <ul>
+                  <li><a href="#" class="hover:underline">Sobre Nós</a></li>
+                  <li><a href="#" class="hover:underline">Contato</a></li>
+                  <li><a href="#" class="hover:underline">FAQ</a></li>
+                  <li><a href="#" class="hover:underline">Política de Privacidade</a></li>
+                  <li><a href="#" class="hover:underline">Termos e Condições</a></li>
+                  <li><a href="#" class="hover:underline">Política de Troca e Devolução</a></li>
+              </ul>
+          </div>
+          
+          <!-- Categorias de Produtos -->
+          <div>
+              <h4 class="font-bold mb-2">Categorias</h4>
+              <ul>
+                  <li><a href="#" class="hover:underline">Tênis Masculinos</a></li>
+                  <li><a href="#" class="hover:underline">Tênis Femininos</a></li>
+                  <li><a href="#" class="hover:underline">Tênis para Crianças</a></li>
+                  <li><a href="#" class="hover:underline">Novidades</a></li>
+                  <li><a href="#" class="hover:underline">Promoções</a></li>
+              </ul>
+          </div>
+          
+          <!-- Redes Sociais e Newsletter -->
+          <div>
+              <h4 class="font-bold mb-2">Siga-nos</h4>
+              <div class="flex gap-2">
+                  <a href="#" class="hover:underline">Facebook</a>
+                  <a href="#" class="hover:underline">Instagram</a>
+                  <a href="#" class="hover:underline">Twitter</a>
+              </div>
+              <h4 class="font-bold mt-4 mb-2">Newsletter</h4>
+              <form>
+                  <input type="email" placeholder="Seu email" class="bg-[#3F3F3F] text-white p-2 w-full mb-2">
+                  <button class="bg-yellow-500 p-2 w-full">Inscrever-se</button>
+              </form>
+          </div>
+      </div>
+      <div class="container mx-auto mt-8 text-center">
+          <p>© 2024 SoleStyle. Todos os direitos reservados.</p>
+        </div>
+      </footer>
+      <div class="bg-[#3F3F3F] text-white p-2 text-center">
+        <p>Desenvolvido por <a class="text-blue-600" href="https://www.instagram.com/mv__informatica/" target="_blank" rel="noopener noreferrer">  MV Informática</a></p>
+      </div>
+  
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> 
 </body>
@@ -62,7 +123,7 @@
   
     <div class="fixed inset-0 overflow-hidden">
       <div class="absolute inset-0 overflow-hidden">
-        <div class="pointer-events-none fixed inset-y-0 right-0 flex w-[400px] pl-10">
+        <div class="pointer-events-none fixed inset-y-0 right-0 flex max-md:w-[270px] max-md:pl-[30px] w-[400px] ">
           
           <!--
             Slide-over panel, show/hide based on slide-over state.
@@ -87,7 +148,7 @@
             -->
            
  
-            <div class="flex h-full flex-col overflow-y-scroll bg-[#181818] py-6 shadow-xl">
+            <div class="flex h-full flex-col overflow-y-scroll bg-[#181818] py-6 shadow-xl  [&::-webkit-scrollbar]:hidden">
               <div class=" flex justify-between px-4 sm:px-6">
                 <h2 class="text-base font-bold leading-6 text-white" id="slide-over-title">Menu</h2>
                 <button type="button" class="btn-close bg-white" aria-label="Close" onclick="closeAlert()"></button>
@@ -106,12 +167,12 @@
                   <div class="flex items-center gap-3">
 
                     @if(empty($avatar))
-                     <p class="flex items-center justify-center w-16 h-10 rounded-full bg-[#828282] text-white">{{ substr($nomeUser, 0, 1) }}</p>
+                     <p class="flex items-center justify-center w-16 h-16 rounded-full bg-[#828282] text-white">{{ substr($nomeUser, 0, 1) }}</p>
                     @else
                       <img class="w-10 rounded-full" src="{{ $avatar }}" alt="">
                     @endif
                     
-                      <div>
+                      <div class="flex flex-col">
                           <a href="{{ route('profile') }}" class="text-white pb-0">{{ $nomeUser }}</a>
                           <small class="text-[#828282]">{{ $emailUser }}</small>
                       </div>
@@ -137,10 +198,12 @@
                  
                   <a class="p-1" href="{{ Route('favorites.pageFavorito') }}"><i class="bi bi-heart pr-3 text-[#D9C549]"></i>Favoritos</a>
                   <a class="p-1" href="{{ Route('cart.pageCarrinho') }}"><i class="bi bi-basket2-fill pr-3 text-[#D9C549]"></i>Carrinho</a>
-                  <a class="p-1" href="{{ Route('portal') }}"><i class="bi bi-basket2-fill pr-3 text-[#D9C549]"></i>Dados da compra</a>
+                  <a class="p-1" href="{{ Route('portal') }}"><i class="bi bi-bag-fill pr-3 text-[#D9C549]"></i>Dados da compra</a>
                   
 
                   <hr class=" mt-7 mb-7 bg-[#3F3F3F] bg-opacity-75">
+
+                  <a class="p-1" href="{{ Route('portal') }}"><i class="bi bi-whatsapp pr-3 text-[#D9C549]"></i>Falar com o vendedor</a>
 
                       <!------ Sair da conta ------->
                  <div class="grid grid-rows-[1fr_auto] h-[30vh]">
@@ -172,7 +235,7 @@
     document.getElementById("deactivate").addEventListener("click", function() {
       // HTML do modal
       var modalHtml = `
-      <div class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+      <div class="relative z-10 " aria-labelledby="modal-title" role="dialog" aria-modal="true">
   <!--
     Background backdrop, show/hide based on modal state.
 

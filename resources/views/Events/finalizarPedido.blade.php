@@ -20,7 +20,11 @@
                 
                   @endif
         
-                   <a class="text-white" href="{{ route('endereco')}}">Editar ou adicionar um endereço</a>
+                  @if(isset($enderecoUser))
+                   <a class="text-[#D9C549]" href="{{ route('editar.endereco')}}">Editar endereco</a>
+                  @else
+                   <a class="text-[#D9C549]" href="{{ route('endereco')}}">Adicionar um endereço</a>
+                  @endif
                
               </div>
           </div>
@@ -47,7 +51,7 @@
 
                 <div class="flex justify-between m-2">
                     <p class="text-white font-semibold">Total</p>
-                    <p class="text-white font-semibold">R$ {{ session('total')  }}</p>
+                    <p class="text-white font-semibold">R$ {{ number_format(session('total'), 2, ',', '.')  }}</p>
                 </div>
             </div>
           </div>
@@ -59,17 +63,21 @@
       <div class="m-3 mt-7">
         <form action="/subscribe" method="POST">
             @csrf
-            <input type="hidden" name="id" value="{{$id}}">
-            <input type="hidden" name="nome" value="{{$nome}}">
-            <input type="hidden" name="preco" value="{{ $total }}">
-            <input type="hidden" name="imagem" value="{{$imagem}}">
+            <input type="hidden" name="id" id="id" value="{{$id}}">
+            <input type="hidden" name="nome" id="nome" value="{{$nome}}">
+            <input type="hidden" name="preco" id="preco" value="{{ $total }}">
+            <input type="hidden" name="imagem" id="imagem" value="{{$imagem}}">
 
             <div class="mb-5 mt-5">
               <label for="cupom" class="text-[#D9C549]">Cupom de Desconto:</label>
-              <input type="text" class="bg-[#3F3F3F] rounded-md p-2 text-white outline-none focus:outline-amber-300" id="cupom" name="cupom">
+              <input type="text" class="bg-[#3F3F3F] rounded-md p-2 text-white outline-none focus:outline-amber-300" id="cupom" name="cupom" placeholder="Insira o cupom">
             </div>
         
-            <button type="submit" class="p-2 rounded-md w-full bg-[#D9C549]">Finalizar pedido</button>
+            @if(isset($enderecoUser))
+              <button type="submit" class="p-2 rounded-md w-full cursor-pointer bg-[#D9C549]">Finalizar pedido</button>
+            @else
+              <button type="submit" class="p-2 rounded-md w-full bg-[#D9C549]" disabled>Finalizar pedido</button>
+            @endif
         </form>
             
     </div>
