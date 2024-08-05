@@ -41,32 +41,11 @@
         @endif
 </div>
 
-
-<form class="mt-5" action="{{ route('frete') }}" method="POST">
-    @csrf
-    <input class="p-2 rounded-sm bg-[#3F3F3F] text-white max-sm:w-40" type="text" name="codigo" id="codigo" placeholder="Informe o Código de Rastreamento">
-<button type="submit" class="bg-[#D9C549] font-bold p-2 text-sm rounded-sm">Consultar Rastreamento</button>
-</form>
-
-
-@if(isset($error))
-        <p>{{ $error }}</p>
-    @elseif(isset($events))
-        <ul>
-            @foreach($events as $event)
-                <li>{{ $event['description'] }} - {{ $event['date'] }} - {{ $event['location'] }}</li>
-            @endforeach
-        </ul>
-    @else
-        <p>Nenhuma informação de rastreamento disponível.</p>
-    @endif
-
 <div class=" text-center font-medium text-[#595959]">
     <small>Depois de realizar a compra, você tem </br> apenas 10 horas para cancelar o pedido.</small>
 </div>
 
 <div id="container"></div>
-
 
 
 <script>
