@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('stripe_session_id');
             $table->integer('amount');
             $table->string('currency');
+            $table->string('codigo_rastreio')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
