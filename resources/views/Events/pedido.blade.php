@@ -32,19 +32,13 @@
             @else
             <div class="flex justify-between items-center w-full">
             <p class="text-[#f0d83a75] mt-2 text-center rounded-md">{{$pedido->status}}</p>
-            @if(isset($pedido->codigo_rastreio))
-                <p class="text-[#f0d83a75] mt-2 text-center rounded-md">Código de rastreio: <span class="text-white">{{$pedido->codigo_rastreio}}</span> </p>
-            @else
-                <p class="text-[#f0d83a75] mt-2 text-center rounded-md">Código de rastreio: <span class="text-[#767676]">Aguardando</span> </p>
-            @endif
+            <p class="text-[#f0d83a75] mt-2 text-center rounded-md">Código de rastreio: {{$pedido->tracking_code}}</p>
             <button class="cancel-button bg-[#D9C549] p-2 rounded-md" data-pedido-id="{{$pedido->id}}">Cancelar pedido</button>
         </div>
             @endif
         </div>
         @endforeach
-    @else
-       <p class="text-white text-center">Nenhum pedido encontrado</p>
-    @endif
+        @endif
 </div>
 
 <div class=" text-center font-medium text-[#595959]">
